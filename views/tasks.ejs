@@ -31,12 +31,12 @@
 
 
   <!-- New task tab -->
-  <form id="addNewTask"  name="addNewTaskform" class="newTaskForm" action="/submitTask" method="post">
+  <form id="addNewTask"  name="addNewTaskform" class="newTaskForm" action="" method="">
     <div class="inputTab">
       <div class="plusButton fas fa-plus "></div>
-      <input id="inputNewTask" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length of 50 symbols" autocomplete="off" type="text" name="taskDescription" value=""
+      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" name="taskDescription" value=""
         placeholder="  Start typing here to create a task..." required>
-      <button class="addButton" type="submit" value="">
+      <button id="addButton" class="addButton" type="submit" value="Submit">
         <p>Add task</p>
       </button>
     </div>
@@ -47,6 +47,7 @@
   <div class="taskList">
     <% tasks.forEach(function(task){%>
     <div class="taskRow">
+
       <div class="doneMark">
         <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
           <input type="checkbox" name="" value="">
@@ -56,7 +57,7 @@
       <div class="taskDescription">
         <%= task.description%>
       </div>
-      
+
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
           <a data-toggle="modal" data-target="#setPriorityModal">

@@ -1,3 +1,4 @@
+//Delete task by ID
 $(document).ready(function() {
   $(".deleteTask").on("click", function() {
     var id = $(this).attr("data-id");
@@ -24,6 +25,7 @@ $(document).ready(function() {
     });
   })
 
+  //Edit existing task by ID
   $(document).on("click", '.editTask', function() {
     $("#editTaskDescription").val($(this).attr('data-description'));
     $("#editTaskId").val($(this).attr("data-id"));
@@ -36,7 +38,7 @@ $(document).ready(function() {
           type: "POST",
           url: url,
           data: {
-            param1: $("#editTaskDescription").val()
+            param: $("#editTaskDescription").val()
           },
           success: function(result) {
             $("#editTaskModal").modal('hide')
@@ -51,6 +53,32 @@ $(document).ready(function() {
     })
   })
 })
+
+//Add new task
+$(document).on("click", "#addButton", function() {
+  var newTask = $("#inputNewTask").val();
+  if (newTask !== '' && newTask.length >= 3) {
+    // alert(newTask);
+    var url = '/submitTask';
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: {
+        param: $("#inputNewTask").val()
+      },
+      success: function(results) {
+        console.log("adding new task");
+        window.location.href = "/"
+      },
+      error: function(err) {
+        console.log(err);
+      }
+    })
+  }
+})
+
+// Add new TODOLIST
+
 
 
 

@@ -23,7 +23,8 @@ body {
 .project {
   margin: 10% 15% 5% 15%;
 }
-.jumbotron{
+
+.jumbotron {
   margin: 10% 15% 5% 15%;
 }
 
@@ -162,7 +163,7 @@ body {
   overflow: hidden;
   border-right: 1px solid pink;
   padding: 10px;
-
+  text-align: center;
 }
 
 .separator {
