@@ -1,0 +1,234 @@
+/* Title colour */
+/* #4979B3  */
+/* Task Header */
+/* #D1D1D1 */
+/* Add Task button */
+/* #7CB395 */
+/* + sign at Text area */
+/* #5C9171 */
+/* Hovered Task */
+/* #FCFED5 */
+body {
+  background-image: url("https://imgur.com/laFoZZI.png");
+  background-position: center;
+  /* Center the image */
+  background-repeat: no-repeat;
+  /* Do not repeat the image */
+  background-size: auto;
+  /* Resize the background image to cover the entire container */
+  background-color: #cccccc;
+  /* Used if the image is unavailable */
+}
+
+.project {
+  margin: 10% 15% 5% 15%;
+}
+.jumbotron{
+  margin: 10% 15% 5% 15%;
+}
+
+/* Header section */
+.projectHeader {
+  background-color: #245fb3;
+  position: relative;
+  padding: 10px 0 10px 0;
+  border: 2px outset #4979B3;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  background-image: url("https://www.transparenttextures.com/patterns/binding-dark.png");
+}
+
+/* Deadline setup */
+.fa-calendar-alt {
+  position: relative;
+  color: #ababab;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.projectName {
+  position: absolute;
+  display: inline-block;
+  margin: 5px;
+  margin-left: 15px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px black;
+}
+
+.projectButtons {
+  float: right;
+  color: #ababab;
+  display: inline-block;
+}
+
+.projectButtons .separatorDash {
+  font-size: 15px;
+  color: #ababab;
+}
+
+.calendar {
+  color: #ababab;
+  margin-left: 15px;
+}
+
+.editProject {
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  width: auto;
+}
+
+.editProjectInput {
+  display: none;
+  float: left;
+}
+
+.deleteProject {
+  padding: 10px 20px 10px 10px;
+  cursor: pointer;
+}
+
+/* Add new task section */
+.inputTab {
+  background-color: #D1D1D1;
+  border: 1px solid #ababab;
+  display: table;
+  width: 100%;
+  display: -webkit-flex;
+}
+
+.inputField {
+  border: none;
+  border-top: 1px solid grey;
+  border-top-left-radius: 2px;
+  box-shadow: inset 1px 1px 2px grey;
+  margin: 5px 0 5px 0;
+  -webkit-flex: 1;
+  height: 30px;
+  min-width: 30px;
+}
+
+.addButton {
+  background-color: #7CB395;
+  color: white;
+  border: 1px solid grey;
+  border-left: 1px solid grey;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-bottom: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  cursor: pointer;
+  text-shadow: 1px 1px 2px black;
+  box-shadow: inset -3px -1px 6px 1px #538f6f,
+    inset 3px -1px 3px 1px #538f6f;
+  margin: 5px 12px 5px 0;
+  display: table-cell;
+  height: 30px;
+}
+
+.plusButton {
+  color: #599173;
+  text-shadow: inset 2px 2px black;
+  font-size: 24px;
+  padding: 10px 14px;
+  display: table-cell;
+  align-self: center;
+}
+
+/* Current tasks area */
+/*  */
+.taskList {
+  background-color: white;
+  border-right: 1px solid #ababab;
+  border-left: 1px solid #ababab;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.taskRow {
+  font-size: 14px;
+  display: table;
+  width: 100%;
+  height: 40px;
+  border-top: 1px solid #ababab;
+}
+
+.doneMark {
+  width: 40px;
+  display: table-cell;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid pink;
+  padding: 10px;
+
+}
+
+.separator {
+  border-right: 1px solid pink;
+  width: 5px;
+  height: auto;
+  display: table-cell;
+}
+
+.taskDescription {
+  display: table-cell;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  padding: 10px 0 10px 10px;
+  /* margin-left: 10px; */
+  border-right: 1px solid #ababab;
+}
+
+.taskOptions {
+  visibility: hidden;
+  display: table-cell;
+  height: auto;
+  overflow: hidden;
+  width: 115px;
+  text-align: center;
+}
+
+.taskRow:hover .taskOptions {
+  visibility: visible;
+}
+
+.taskRow:hover {
+  background-color: #FCFED5;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.taskOptions .deleteTask, .editTask, .sortButton {
+  font-size: 15px;
+  cursor: pointer;
+  color: #ababab;
+}
+
+.separatorDash {
+  color: #d9d9d9;
+  font-size: 10px;
+  transform: rotate(90deg);
+}
+
+.newProject {
+  text-align: center;
+  margin-bottom: 15%;
+}
+
+.addNewProject {
+  text-shadow: 1px 1px 2px black;
+  padding: 6px 15px;
+  color: white;
+  background-color: #245fb3;
+  border: 1px outset #4979B3;
+  border-radius: 3px;
+  background-image: url("https://www.transparenttextures.com/patterns/binding-dark.png");
+  margin-top: 50px;
+}
+
+.addNewProject h6 {
+  margin-bottom: 0;
+}
