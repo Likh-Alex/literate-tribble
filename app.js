@@ -5,24 +5,36 @@ const cons = require("consolidate")
 const {
   Client
 } = require('pg');
-const session = require("express-session")
-const passport = require("passport")
-// LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 const {
   pool
 } = require("./dbConfig")
+const session = require("express-session")
+const flash = require("express-flash")
+const passport = require("passport")
+const initializePassport = require('./passportConfig.js')
+initializePassport(passport);
+// LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+
 
 
 
 const app = express();
 app.use(express.static("public"))
 app.set('view engine', 'ejs')
+app.use(session({
+  secret: 'forevereversecuresecret',
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(bodyParser.urlencoded({
   extended: false
-}))
-
+}));
+app.use(flash());
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 
@@ -30,7 +42,25 @@ app.use(bodyParser.urlencoded({
 //Render Home page
 app.get("/", function(req, res) {
   res.render("home")
+  log(req.session.id)
 })
+
+app.get("/tasks", (req, res) => {
+  console.log(req.params);
+  if (req.isAuthenticated()) {
+    pool.query('SELECT * FROM tasks WHERE project_id = 1', (err, results) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("tasks", {
+          tasks: results.rows
+        })
+      }
+    })
+  }
+  res.redirect('/login')
+});
+
 
 // Add task
 app.post("/submitTask", function(req, res) {
@@ -38,38 +68,49 @@ app.post("/submitTask", function(req, res) {
     console.log("task is empty");
   } else {
     pool.query("INSERT INTO tasks (description) VALUES ($1)", [req.body.param]);
-    res.redirect('/')
+    res.redirect('/tasks')
   }
 })
 
 // Delete task by id
 app.delete('/delete/:id', function(req, res) {
   pool.query("DELETE FROM tasks WHERE id = ($1)", [req.params.id]);
-  res.sendStatus(200);
 })
 
 // Edit task by ID
 app.post('/edit/:id', function(req, res) {
   // console.log(req.body);
   pool.query("UPDATE tasks SET description=$1 WHERE id=$2", [req.body.param, req.params.id]);
-  res.sendStatus(200);
+  res.render('login')
+})
+
+app.get('/logout', (req, res) => {
+  req.logOut();
+  res.redirect('/login')
 })
 
 // Login page
-app.get("/login", function(req, res) {
+app.get("/login", checkAuthenticated, function(req, res) {
   res.render('login')
 })
-//Check if user exists and login and compare password entered and saved in DB
+//Check if user exists and login also compare password entered and saved in DB
 app.post("/login", async function(req, res) {
-  var enteredUsername = req.body.username;
+  var enteredEmail = req.body.email;
   var enteredPassword = req.body.password;
-  var user = await pool.query("SELECT * FROM users WHERE username=$1", [enteredUsername])
-  var userPassword = user.rows[0].password;
-  if (user) {
+  let errors = [];
+  var user = await pool.query("SELECT * FROM users WHERE email=$1", [enteredEmail])
+  if (user.rowCount === 0) {
+    errors.push({
+      message: "That email is not registered"
+    })
+    res.render('login', {
+      errors
+    })
+  } else {
+    var userPassword = user.rows[0].password;
     bcrypt.compare(enteredPassword, userPassword, function(err, result) {
       if (result === true) {
-        console.log("Logged In");
-        pool.query('SELECT * FROM tasks ', (err, results) => {
+        pool.query('SELECT * FROM tasks WHERE project_id = 1', (err, results) => {
           if (err) {
             console.log(err);
           } else {
@@ -79,34 +120,34 @@ app.post("/login", async function(req, res) {
           }
         })
       } else {
-        console.log("Wrong Password");
-        res.render('login');
+        errors.push({
+          message: "Wrong password"
+        })
+        res.render('login', {
+          errors
+        });
       }
     })
   }
 })
 
+
 // Register page save password in hash
 app.get("/register", function(req, res) {
   res.render('register')
 })
-app.post("/register", async function(req, res) {
+app.post("/register", checkAuthenticated, async function(req, res) {
   let {
-    username,
+    email,
     password
   } = req.body;
   let errors = []
-  if (password.length < 6) {
-    errors.push({
-      message: "Password must be at least 6 characters"
-    })
-  }
-  const enteredUsername = req.body.username;
-  var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 ", [enteredUsername])
-  if (match.rows[0].count == 0) {
+  var user = await pool.query("SELECT * FROM users WHERE email=$1 ", [email])
+  console.log(user);
+  if (user.rowCount === 0) {
     bcrypt.genSalt(saltRounds, function(err, salt) {
       bcrypt.hash(password, saltRounds, function(err, hash) {
-        pool.query("INSERT INTO users (username, password) VALUES ($1, $2)", [enteredUsername, hash]);
+        pool.query("INSERT INTO users (email, password) VALUES ($1, $2)", [email, hash]);
       })
     })
     pool.query('SELECT * from tasks ORDER BY id DESC', (err, results) => {
@@ -126,9 +167,29 @@ app.post("/register", async function(req, res) {
       errors
     });
   }
+
+
 })
 
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/tasks',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
 
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/tasks')
+  }
+  next();
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login')
+}
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

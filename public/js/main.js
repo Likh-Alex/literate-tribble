@@ -42,7 +42,7 @@ $(document).ready(function() {
           success: function(result) {
             $("#editTaskModal").modal('hide')
             console.log("editing task");
-            window.location.href = 'tasks'
+            window.location.href = '/tasks'
           },
           error: function(err) {
             console.log(err);
