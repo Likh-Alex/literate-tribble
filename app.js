@@ -26,11 +26,10 @@ const client = new Client({
 })
 client.connect()
 
+//Render Home page
 app.get("/", function(req, res) {
   res.render("home")
 })
-
-
 
 // Add task
 app.post("/submitTask", function(req, res) {
@@ -59,18 +58,16 @@ app.post('/edit/:id', function(req, res) {
 app.get("/login", function(req, res) {
   res.render('login')
 })
-
+//Check if user exists and login
 app.post("/login", async function(req, res) {
   var enteredUsername = req.body.username;
   var enteredPassword = req.body.password;
-  console.log(enteredUsername);
-  var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 AND password=$2", [enteredUsername,enteredPassword])
-  console.log(match);
+  var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 AND password=$2", [enteredUsername, enteredPassword])
   if (match.rows[0].count == 0) {
-    res.render('login')
-    
+    res.render('login');
+    userExits();
   } else {
-    pool.query('SELECT * FROM tasks ORDER BY id DESC', (err, results) => {
+    pool.query('SELECT * FROM tasks ', (err, results) => {
       if (err) {
         console.log(err);
       } else {
@@ -90,21 +87,26 @@ app.get("/register", function(req, res) {
   res.render('register')
 })
 app.post("/register", async function(req, res) {
-  const username = req.body.username;
+  const enteredUsername = req.body.username;
   const password = req.body.password;
-  // console.log(username, password);
-  pool.query("INSERT INTO users (username, password) VALUES ($1, $2)", [username, password]);
-  pool.query('SELECT * from tasks ORDER BY id DESC', (err, results) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render("tasks", {
-        tasks: results.rows
-        //SELECT * FROM project INNER JOIN tasks ON tasks.project_id = project.id
-        // SELECT * from tasks ORDER BY id DESC
-      })
-    }
-  })
+  var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 ", [enteredUsername])
+  if (match.rows[0].count !== 0) {
+    pool.query("INSERT INTO users (username, password) VALUES ($1, $2)", [enteredUsername, password]);
+    pool.query('SELECT * from tasks ORDER BY id DESC', (err, results) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("tasks", {
+          tasks: results.rows
+          //SELECT * FROM project INNER JOIN tasks ON tasks.project_id = project.id
+          // SELECT * from tasks ORDER BY id DESC
+        })
+      }
+    })
+  } else {
+    res.render('register')
+  }
+
 })
 
 app.listen(3000, function() {

@@ -3,7 +3,6 @@
 
 <!-- Current project tab -->
 <div class="project">
-  <form class="" action="index.html" method="post">
     <div class="projectHeader">
       <div class="projectTitle">
         <span>
@@ -27,11 +26,9 @@
         </div>
       </div>
     </div>
-  </form>
 
 
   <!-- New task tab -->
-  <form id="addNewTask"  name="addNewTaskform" class="newTaskForm" action="" method="">
     <div class="inputTab">
       <div class="plusButton fas fa-plus "></div>
       <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" name="taskDescription" value=""
@@ -40,17 +37,20 @@
         <p>Add task</p>
       </button>
     </div>
-  </form>
 
 
   <!-- Current tasks in the ToDoList -->
   <div class="taskList">
     <% tasks.forEach(function(task){%>
     <div class="taskRow">
-
       <div class="doneMark">
         <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
-          <input type="checkbox" name="" value="">
+          <% if(task.completion===true){%>
+          <input id="doneMark" type="checkbox" name="doneTaskMark" checked>
+          <%}else{%>
+          <input id="doneMark" type="checkbox" name="doneTaskMark">
+          <%  }%>
+
         </span>
       </div>
       <div class="separator"></div>
@@ -61,7 +61,7 @@
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
           <a data-toggle="modal" data-target="#setPriorityModal">
-            <i onclick="myFunction" class="sortButton fas fa-sort"></i>
+            <i onclick="myFunction" data-priority="<%= task.priority%>" class="sortButton fas fa-sort"></i>
           </a>
         </span>
         <i class="separatorDash fas fa-minus"></i>

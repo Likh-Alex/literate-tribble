@@ -14,7 +14,7 @@ $(document).ready(function() {
             success: function(result) {
               $("#deleteTaskModal").modal('hide')
               console.log("deleting task");
-              window.location.href = '/'
+              window.location.href = '/tasks'
             },
             error: function(err) {
               console.log(err);
@@ -32,7 +32,6 @@ $(document).ready(function() {
     var id = $(this).attr("data-id");
     var url = '/edit/' + id;
     $(".confirmEditTask").on("click", function(event) {
-
       if (!null) {
         $.ajax({
           type: "POST",
@@ -43,7 +42,7 @@ $(document).ready(function() {
           success: function(result) {
             $("#editTaskModal").modal('hide')
             console.log("editing task");
-            window.location.href = '/'
+            window.location.href = 'tasks'
           },
           error: function(err) {
             console.log(err);
@@ -68,7 +67,7 @@ $(document).on("click", "#addButton", function() {
       },
       success: function(results) {
         console.log("adding new task");
-        window.location.href = "/"
+        window.location.href = "/tasks"
       },
       error: function(err) {
         console.log(err);
@@ -77,10 +76,21 @@ $(document).on("click", "#addButton", function() {
   }
 })
 
+
+$(document).ready(function() {
+  $('input[type="checkbox"]').click(function() {
+    var newStatus = true;
+    if ($(this).prop("checked") == true) {
+      alert("Checkbox is checked.");
+    } else if ($(this).prop("checked") == false) {
+      alert("Checkbox is unchecked.");
+    }
+  });
+});
+
+
+
 // Add new TODOLIST
-
-
-
 
 
 $(function() {
