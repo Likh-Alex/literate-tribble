@@ -2,41 +2,46 @@
 
 
 <!-- Current project tab -->
+
+<div class="logoutButton">
+  <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
+</div>
+
 <div class="project">
-    <div class="projectHeader">
-      <div class="projectTitle">
-        <span>
-          <a data-toggle="modal" data-target="#editDeadLineModal">
-            <i class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
+  <div class="projectHeader">
+    <div class="projectTitle">
+      <span>
+        <a data-toggle="modal" data-target="#editDeadLineModal">
+          <i class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
+        </a>
+      </span>
+      <h5 value="" class="projectName">Project name</h5>
+      <div class="projectButtons">
+        <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
+          <a data-toggle="modal" data-target="#editProjectTitleModal">
+            <i class="editProject fas fa-pencil-alt"></i>
           </a>
         </span>
-        <h5 value="" class="projectName">Project name</h5>
-        <div class="projectButtons">
-          <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
-            <a data-toggle="modal" data-target="#editProjectTitleModal">
-              <i class="editProject fas fa-pencil-alt"></i>
-            </a>
-          </span>
-          <i class="separatorDash fas fa-minus"></i>
-          <span data-toggle="tooltip" data-placement="top" title="Delete Project">
-            <a data-toggle="modal" data-target="#deleteProjectModal">
-              <i class="deleteProject far fa-trash-alt"></i>
-            </a>
-          </span>
-        </div>
+        <i class="separatorDash fas fa-minus"></i>
+        <span data-toggle="tooltip" data-placement="top" title="Delete Project">
+          <a data-toggle="modal" data-target="#deleteProjectModal">
+            <i class="deleteProject far fa-trash-alt"></i>
+          </a>
+        </span>
       </div>
     </div>
+  </div>
 
 
   <!-- New task tab -->
-    <div class="inputTab">
-      <div class="plusButton fas fa-plus "></div>
-      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" name="taskDescription" value=""
-        placeholder="  Start typing here to create a task..." required>
-      <button id="addButton" class="addButton" type="submit" value="Submit">
-        <p>Add task</p>
-      </button>
-    </div>
+  <div class="inputTab">
+    <div class="plusButton fas fa-plus "></div>
+    <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" name="taskDescription" value=""
+      placeholder="  Start typing here to create a task..." required>
+    <button id="addButton" class="addButton" type="submit" value="Submit">
+      <p>Add task</p>
+    </button>
+  </div>
 
 
   <!-- Current tasks in the ToDoList -->
@@ -83,7 +88,10 @@
 
     <%- include('partials/modals') %>
 
+    <div class="newProject">
+      <button class="addNewProject" type="button" name="button" data-toggle="modal" data-target="#newProjectModal">
+        <h6><i style="padding-right: 15px;" class="fas fa-plus"></i>Add TODO List</h6>
+      </button>
+    </div>
 
-
-    <script src="/js/main.js"></script>
     <%- include('partials/footer') %>

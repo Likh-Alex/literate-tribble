@@ -2,6 +2,15 @@
 <div class="container mt-5">
   <h1>Register</h1>
 
+  <ul>
+
+    <% if(typeof errors != 'undefined'){%>
+    <% errors.forEach(error=>{%>
+    <li><%= error.message %></li>
+    <%})%>
+    <%}%>
+  </ul>
+
   <div class="row">
     <div class="col-sm-8">
       <div class="card">

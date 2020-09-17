@@ -3,39 +3,25 @@ const bodyParser = require("body-parser")
 const ejs = require('ejs')
 const cons = require("consolidate")
 const {
-  Pool,
   Client
 } = require('pg');
 const session = require("express-session")
 const passport = require("passport")
-LocalStrategy = require('passport-local').Strategy;
+// LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const {
+  pool
+} = require("./dbConfig")
+
 
 
 const app = express();
 app.use(express.static("public"))
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({
-  extended: true
+  extended: false
 }))
-
-// const dbConfig = {
-//   user: process.env.USERNAME,
-//   password: process.env.PASSWORD,
-//   database: process.env.DATABASE,
-//   host: process.env.HOST,
-//   port: process.env.PORT,
-// }
-
-const connectionString = "postgressql://tester:1234@localhost:5432/tasklistDB";
-const pool = new Pool({
-  connectionString: connectionString,
-})
-const client = new Client({
-  connectionString: connectionString
-})
-client.connect()
 
 
 
@@ -82,7 +68,7 @@ app.post("/login", async function(req, res) {
   if (user) {
     bcrypt.compare(enteredPassword, userPassword, function(err, result) {
       if (result === true) {
-        console.log("i'm in");
+        console.log("Logged In");
         pool.query('SELECT * FROM tasks ', (err, results) => {
           if (err) {
             console.log(err);
@@ -93,7 +79,7 @@ app.post("/login", async function(req, res) {
           }
         })
       } else {
-        
+        console.log("Wrong Password");
         res.render('login');
       }
     })
@@ -105,8 +91,17 @@ app.get("/register", function(req, res) {
   res.render('register')
 })
 app.post("/register", async function(req, res) {
+  let {
+    username,
+    password
+  } = req.body;
+  let errors = []
+  if (password.length < 6) {
+    errors.push({
+      message: "Password must be at least 6 characters"
+    })
+  }
   const enteredUsername = req.body.username;
-  const password = req.body.password;
   var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 ", [enteredUsername])
   if (match.rows[0].count == 0) {
     bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -124,12 +119,18 @@ app.post("/register", async function(req, res) {
       }
     })
   } else {
-    console.log("User with this name exists");
-    res.render('register')
+    errors.push({
+      message: "This email already registered"
+    })
+    res.render('register', {
+      errors
+    });
   }
-
 })
 
-app.listen(3000, function() {
-  console.log("Server is UP");
+
+
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+  console.log("Server is UP on " + PORT);
 })
