@@ -1,5 +1,4 @@
 const express = require("express")
-const path = require("path")
 const bodyParser = require("body-parser")
 const ejs = require('ejs')
 const cons = require("consolidate")
@@ -7,15 +6,27 @@ const {
   Pool,
   Client
 } = require('pg');
+const session = require("express-session")
+const passport = require("passport")
+LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+
 const app = express();
-const jq = require('jquery')
-
-
 app.use(express.static("public"))
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({
   extended: true
 }))
+
+// const dbConfig = {
+//   user: process.env.USERNAME,
+//   password: process.env.PASSWORD,
+//   database: process.env.DATABASE,
+//   host: process.env.HOST,
+//   port: process.env.PORT,
+// }
 
 const connectionString = "postgressql://tester:1234@localhost:5432/tasklistDB";
 const pool = new Pool({
@@ -25,6 +36,10 @@ const client = new Client({
   connectionString: connectionString
 })
 client.connect()
+
+
+
+
 
 //Render Home page
 app.get("/", function(req, res) {
@@ -58,31 +73,34 @@ app.post('/edit/:id', function(req, res) {
 app.get("/login", function(req, res) {
   res.render('login')
 })
-//Check if user exists and login
+//Check if user exists and login and compare password entered and saved in DB
 app.post("/login", async function(req, res) {
   var enteredUsername = req.body.username;
   var enteredPassword = req.body.password;
-  var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 AND password=$2", [enteredUsername, enteredPassword])
-  if (match.rows[0].count == 0) {
-    res.render('login');
-    userExits();
-  } else {
-    pool.query('SELECT * FROM tasks ', (err, results) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.render("tasks", {
-          tasks: results.rows
+  var user = await pool.query("SELECT * FROM users WHERE username=$1", [enteredUsername])
+  var userPassword = user.rows[0].password;
+  if (user) {
+    bcrypt.compare(enteredPassword, userPassword, function(err, result) {
+      if (result === true) {
+        console.log("i'm in");
+        pool.query('SELECT * FROM tasks ', (err, results) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("tasks", {
+              tasks: results.rows
+            })
+          }
         })
+      } else {
+        
+        res.render('login');
       }
     })
   }
 })
-//SELECT * FROM project INNER JOIN tasks ON tasks.project_id = project.id
-// SELECT * from tasks ORDER BY id DESC
 
-
-// Register page
+// Register page save password in hash
 app.get("/register", function(req, res) {
   res.render('register')
 })
@@ -90,20 +108,23 @@ app.post("/register", async function(req, res) {
   const enteredUsername = req.body.username;
   const password = req.body.password;
   var match = await pool.query("SELECT COUNT(*) FROM users WHERE username=$1 ", [enteredUsername])
-  if (match.rows[0].count !== 0) {
-    pool.query("INSERT INTO users (username, password) VALUES ($1, $2)", [enteredUsername, password]);
+  if (match.rows[0].count == 0) {
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+      bcrypt.hash(password, saltRounds, function(err, hash) {
+        pool.query("INSERT INTO users (username, password) VALUES ($1, $2)", [enteredUsername, hash]);
+      })
+    })
     pool.query('SELECT * from tasks ORDER BY id DESC', (err, results) => {
       if (err) {
         console.log(err);
       } else {
         res.render("tasks", {
           tasks: results.rows
-          //SELECT * FROM project INNER JOIN tasks ON tasks.project_id = project.id
-          // SELECT * from tasks ORDER BY id DESC
         })
       }
     })
   } else {
+    console.log("User with this name exists");
     res.render('register')
   }
 
