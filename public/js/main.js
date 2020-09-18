@@ -2,19 +2,19 @@
 $(document).ready(function() {
   $(".deleteTask").on("click", function() {
     var id = $(this).attr("data-id");
-    // alert("The data-id of clicked item is: " + dataId);
     $("#deleteTaskModal").on('show.bs.modal', function(event) {
-      var url = '/delete/' + id; //url
-      // alert(dataId)
+      var url = '/delete/' + id;
+      // alert(id);
       $(document).on("click", ".confirmDeleteTask", function() {
         if (!null) {
           $.ajax({
             url: url,
-            type: "DELETE",
+            type: "GET",
             success: function(result) {
-              $("#deleteTaskModal").modal('hide')
+              console.log(result);
+              $("#deleteTaskModal").modal('hide');
               console.log("deleting task");
-              window.location.href = '/tasks'
+              window.location.href = '/'
             },
             error: function(err) {
               console.log(err);
@@ -31,7 +31,9 @@ $(document).ready(function() {
     $("#editTaskId").val($(this).attr("data-id"));
     var id = $(this).attr("data-id");
     var url = '/edit/' + id;
+    console.log("i'm editTaskId");
     $(".confirmEditTask").on("click", function(event) {
+      console.log("i'm clicked");
       if (!null) {
         $.ajax({
           type: "POST",

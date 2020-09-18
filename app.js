@@ -12,20 +12,18 @@ const session = require("express-session")
 const flash = require("express-flash")
 const passport = require("passport")
 const initializePassport = require('./passportConfig.js')
+const cookieParser = require('cookie-parser');
 initializePassport(passport);
 // LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-
-
-
 const app = express();
 app.use(express.static("public"))
 app.set('view engine', 'ejs')
 app.use(session({
-  secret: 'forevereversecuresecret',
+  secret: 'secret',
   resave: false,
   saveUninitialized: false
 }));
@@ -33,60 +31,46 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(flash());
+app.use(require('cookie-parser')());
 app.use(passport.initialize())
 app.use(passport.session())
 
 
-
-
 //Render Home page
-app.get("/", function(req, res) {
+app.get("/", checkAuthenticated, function(req, res) {
   res.render("home")
-  log(req.session.id)
 })
 
-app.get("/tasks", (req, res) => {
-  console.log(req.params);
-  if (req.isAuthenticated()) {
-    pool.query('SELECT * FROM tasks WHERE project_id = 1', (err, results) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.render("tasks", {
-          tasks: results.rows
-        })
-      }
+app.get("/tasks", checkNotAuthenticated, (req, res) => {
+  pool.query('SELECT * FROM tasks ORDER BY id ASC', (err, results) => {
+    res.render("tasks", {
+      tasks: results.rows
     })
-  }
-  res.redirect('/login')
-});
+  })
+})
 
 
 // Add task
 app.post("/submitTask", function(req, res) {
-  if (req.body.param === "") {
-    console.log("task is empty");
-  } else {
-    pool.query("INSERT INTO tasks (description) VALUES ($1)", [req.body.param]);
-    res.redirect('/tasks')
-  }
+  pool.query("INSERT INTO tasks (description) VALUES ($1)", [req.body.param]);
+  res.redirect('/')
 })
 
 // Delete task by id
-app.delete('/delete/:id', function(req, res) {
+app.get('/delete/:id', function(req, res) {
   pool.query("DELETE FROM tasks WHERE id = ($1)", [req.params.id]);
+  res.redirect('/')
 })
 
 // Edit task by ID
 app.post('/edit/:id', function(req, res) {
-  // console.log(req.body);
   pool.query("UPDATE tasks SET description=$1 WHERE id=$2", [req.body.param, req.params.id]);
-  res.render('login')
+  res.redirect('/')
 })
 
 app.get('/logout', (req, res) => {
   req.logOut();
-  res.redirect('/login')
+  res.redirect('/')
 })
 
 // Login page
@@ -94,49 +78,54 @@ app.get("/login", checkAuthenticated, function(req, res) {
   res.render('login')
 })
 //Check if user exists and login also compare password entered and saved in DB
-app.post("/login", async function(req, res) {
-  var enteredEmail = req.body.email;
-  var enteredPassword = req.body.password;
-  let errors = [];
-  var user = await pool.query("SELECT * FROM users WHERE email=$1", [enteredEmail])
-  if (user.rowCount === 0) {
-    errors.push({
-      message: "That email is not registered"
-    })
-    res.render('login', {
-      errors
-    })
-  } else {
-    var userPassword = user.rows[0].password;
-    bcrypt.compare(enteredPassword, userPassword, function(err, result) {
-      if (result === true) {
-        pool.query('SELECT * FROM tasks WHERE project_id = 1', (err, results) => {
-          if (err) {
-            console.log(err);
-          } else {
-            res.render("tasks", {
-              tasks: results.rows
-            })
-          }
-        })
-      } else {
-        errors.push({
-          message: "Wrong password"
-        })
-        res.render('login', {
-          errors
-        });
-      }
-    })
-  }
-})
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/tasks',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
+// app.post("/login", async function(req, res) {
+//   var enteredEmail = req.body.email;
+//   var enteredPassword = req.body.password;
+//   let errors = [];
+//   var user = await pool.query("SELECT * FROM users WHERE email=$1", [enteredEmail])
+//   if (user.rowCount === 0) {
+//     errors.push({
+//       message: "This email is not registered"
+//     })
+//     res.render('login', {
+//       errors
+//     })
+//   } else {
+//     var userPassword = user.rows[0].password;
+//     bcrypt.compare(enteredPassword, userPassword, function(err, result) {
+//       if (result === true) {
+//         pool.query('SELECT * FROM tasks', (err, results) => {
+//           if (err) {
+//             console.log(err);
+//           } else {
+//             res.render("tasks", {
+//               tasks: results.rows
+//             })
+//           }
+//         })
+//       } else {
+//         errors.push({
+//           message: "Wrong password"
+//         })
+//         res.render('login', {
+//           errors
+//         });
+//       }
+//     })
+//   }
+// })
 
 
 // Register page save password in hash
-app.get("/register", function(req, res) {
+app.get("/register", checkAuthenticated, function(req, res) {
   res.render('register')
 })
-app.post("/register", checkAuthenticated, async function(req, res) {
+app.post("/register", async function(req, res) {
   let {
     email,
     password
@@ -161,21 +150,17 @@ app.post("/register", checkAuthenticated, async function(req, res) {
     })
   } else {
     errors.push({
-      message: "This email already registered"
+      message: "This email is already registered"
     })
     res.render('register', {
       errors
     });
   }
-
-
 })
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/tasks',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+
+
+
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {

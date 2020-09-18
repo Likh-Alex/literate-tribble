@@ -34,15 +34,16 @@
 
 
   <!-- New task tab -->
-  <div class="inputTab">
-    <div class="plusButton fas fa-plus "></div>
-    <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" name="taskDescription" value=""
-      placeholder="  Start typing here to create a task..." required>
-    <button id="addButton" class="addButton" type="submit" value="Submit">
-      <p>Add task</p>
-    </button>
-  </div>
-
+  <form class="" action="" method="">
+    <div class="inputTab">
+      <div class="plusButton fas fa-plus"></div>
+      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50"pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" required name="taskDescription" value=""
+        placeholder="  Start typing here to create a task..." required>
+      <button id="addButton" class="addButton" type="submit"  value="Submit">
+        <p>Add task</p>
+      </button>
+    </div>
+  </form>
 
   <!-- Current tasks in the ToDoList -->
   <div class="taskList">
@@ -51,10 +52,10 @@
       <div class="doneMark">
         <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
           <% if(task.completion===true){%>
-          <input id="doneMark" type="checkbox" name="doneTaskMark" checked>
+          <input id="doneMark" type="checkbox" data-completion="<%= task.completion%>" name="doneTaskMark" checked>
           <%}else{%>
-          <input id="doneMark" type="checkbox" name="doneTaskMark">
-          <%  }%>
+          <input id="doneMark" type="checkbox" data-completion="<%= task.completion%>" name="doneTaskMark">
+          <%}%>
 
         </span>
       </div>
