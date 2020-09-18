@@ -60,12 +60,30 @@
         </span>
       </div>
       <div class="separator"></div>
-        <% if(task.completion===true){%>
+        <% if(task.completion===true){ %>
           <div style="text-decoration: line-through;" class="taskDescription">
             <%= task.description%>
           </div>
+
           <%} else {%>
           <div class="taskDescription">
+            <% if(task.priority == 4){%>
+            <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Urgent">
+              <img width="20" src="images/priority4.png" alt="P4">
+            </span>
+            <%}else if(task.priority == 3){%>
+            <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="High">
+              <img styl width="20" src="images/priority3.png" alt="P3">
+            </span>
+            <%}else if(task.priority == 2){%>
+            <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Normal">
+              <img width="20" src="images/priority2.png" alt="P2">
+            </span>
+            <%}else if(task.priority == 1){%>
+            <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Low">
+              <img width="20" src="images/priority1.png" alt="P1">
+            </span>
+            <%}%>
             <%= task.description%>
           </div>
           <%}%>
