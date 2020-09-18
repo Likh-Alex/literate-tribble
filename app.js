@@ -42,6 +42,7 @@ app.get("/", checkAuthenticated, function(req, res) {
 })
 
 app.get("/tasks", checkNotAuthenticated, (req, res) => {
+  const userId = req.user.id;
   pool.query('SELECT * FROM tasks ORDER BY id ASC', (err, results) => {
     res.render("tasks", {
       tasks: results.rows
@@ -67,7 +68,18 @@ app.post('/edit/:id', function(req, res) {
   pool.query("UPDATE tasks SET description=$1 WHERE id=$2", [req.body.param, req.params.id]);
   res.redirect('/')
 })
+//Edit priority by Task ID
+app.post('/editPriority/:id', function(req, res) {
+  pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.param, req.params.id]);
+  res.redirect('/')
+})
 
+// Mark task DONE/UNDONE
+app.post('/markdone/:id', function(req, res) {
+  pool.query("UPDATE tasks SET completion=$1 WHERE id=$2", [req.body.param, req.params.id]);
+  res.redirect('/')
+})
+// Logout and end Session
 app.get('/logout', (req, res) => {
   req.logOut();
   res.redirect('/')

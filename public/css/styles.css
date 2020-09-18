@@ -21,7 +21,7 @@ body {
 }
 
 .project {
-  margin: 15% 15% 5% 15%;
+  margin: 100px 15% 5% 15%;
 }
 
 .jumbotron {
@@ -94,7 +94,7 @@ body {
 .inputTab {
   background-color: #D1D1D1;
   border: 1px solid #ababab;
-  display: table;
+  /* display: table; */
   width: 100%;
   display: -webkit-flex;
 }
@@ -202,7 +202,7 @@ body {
   border-bottom-right-radius: 15px;
 }
 
-.taskOptions .deleteTask, .editTask, .sortButton {
+.taskOptions .deleteTask, .editTask, .setTaskPriority{
   font-size: 15px;
   cursor: pointer;
   color: #ababab;

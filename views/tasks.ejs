@@ -37,9 +37,9 @@
   <form class="" action="" method="">
     <div class="inputTab">
       <div class="plusButton fas fa-plus"></div>
-      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50"pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" required name="taskDescription" value=""
+      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" required name="taskDescription" value=""
         placeholder="  Start typing here to create a task..." required>
-      <button id="addButton" class="addButton" type="submit"  value="Submit">
+      <button id="addButton" class="addButton" type="submit" value="Submit">
         <p>Add task</p>
       </button>
     </div>
@@ -52,22 +52,28 @@
       <div class="doneMark">
         <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
           <% if(task.completion===true){%>
-          <input id="doneMark" type="checkbox" data-completion="<%= task.completion%>" name="doneTaskMark" checked>
+          <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completion%>" name="doneTaskMark" checked>
           <%}else{%>
-          <input id="doneMark" type="checkbox" data-completion="<%= task.completion%>" name="doneTaskMark">
+          <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completion%>" name="doneTaskMark">
           <%}%>
 
         </span>
       </div>
       <div class="separator"></div>
-      <div class="taskDescription">
-        <%= task.description%>
-      </div>
+        <% if(task.completion===true){%>
+          <div style="text-decoration: line-through;" class="taskDescription">
+            <%= task.description%>
+          </div>
+          <%} else {%>
+          <div class="taskDescription">
+            <%= task.description%>
+          </div>
+          <%}%>
 
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
           <a data-toggle="modal" data-target="#setPriorityModal">
-            <i onclick="myFunction" data-priority="<%= task.priority%>" class="sortButton fas fa-sort"></i>
+            <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
           </a>
         </span>
         <i class="separatorDash fas fa-minus"></i>
@@ -89,10 +95,6 @@
 
     <%- include('partials/modals') %>
 
-    <div class="newProject">
-      <button class="addNewProject" type="button" name="button" data-toggle="modal" data-target="#newProjectModal">
-        <h6><i style="padding-right: 15px;" class="fas fa-plus"></i>Add TODO List</h6>
-      </button>
-    </div>
+
 
     <%- include('partials/footer') %>

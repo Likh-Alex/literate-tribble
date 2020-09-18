@@ -25,15 +25,47 @@ $(document).ready(function() {
     });
   })
 
+
+  // Set priority for Task
+  $(document).ready(function() {
+    $(".setTaskPriority").on("click", function() {
+      var id = $(this).attr("data-id");
+      $("#setPriorityModal").on('show.bs.modal', function(event) {
+        var url = '/editPriority/' + id;
+        $(".choose").on('click', function() {
+          var newPriority = $(this).val();
+          // alert(newPriority)
+          $(".confirmEditPriority").on("click", function() {
+              $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                  param: newPriority
+                },
+                success: function(result) {
+                  $("#setPriorityModal").modal('hide')
+                  console.log("Setting priority");
+                  window.location.href = '/tasks'
+                },
+                error: function(err) {
+                  console.log(err);
+                }
+            })
+          })
+        })
+      })
+    })
+  })
+
+
+
   //Edit existing task by ID
   $(document).on("click", '.editTask', function() {
     $("#editTaskDescription").val($(this).attr('data-description'));
     $("#editTaskId").val($(this).attr("data-id"));
     var id = $(this).attr("data-id");
     var url = '/edit/' + id;
-    console.log("i'm editTaskId");
     $(".confirmEditTask").on("click", function(event) {
-      console.log("i'm clicked");
       if (!null) {
         $.ajax({
           type: "POST",
@@ -59,7 +91,6 @@ $(document).ready(function() {
 $(document).on("click", "#addButton", function() {
   var newTask = $("#inputNewTask").val();
   if (newTask !== '' && newTask.length >= 3) {
-    // alert(newTask);
     var url = '/submitTask';
     $.ajax({
       type: "POST",
@@ -78,17 +109,41 @@ $(document).on("click", "#addButton", function() {
   }
 })
 
-
+// Mark task as DONE/UNDONE
 $(document).ready(function() {
   $('input[type="checkbox"]').click(function() {
-    var newStatus = true;
+    var taskCompletion = true;
+    var id = $(this).attr("data-id")
+    var url = '/markdone/' + id;
     if ($(this).prop("checked") == true) {
-      alert("Checkbox is checked.");
+      taskCompletion = true
     } else if ($(this).prop("checked") == false) {
-      alert("Checkbox is unchecked.");
+      taskCompletion = false
+    }
+    if (taskCompletion != null) {
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+          param: taskCompletion
+        },
+        success: function(results) {
+          console.log("adding new task");
+          window.location.href = "/tasks"
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      })
     }
   });
 });
+
+
+
+
+// Set Deadline for Project
+
 
 
 
