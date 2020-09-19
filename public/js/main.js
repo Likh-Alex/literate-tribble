@@ -87,6 +87,36 @@ $(document).ready(function() {
   })
 })
 
+
+// Add new TODOLIST
+$('.addNewProject').on("click", function(){
+  $('#confirmNewList').on('click', function(){
+    var newProject = $('#newListNameInput').val();
+    var url = '/addNewProject';
+    if(newProject !== null){
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+          param: newProject
+        },
+        success: function(result) {
+          $("#newProjectModal").modal('hide')
+          console.log("Adding new project");
+          window.location.href = '/tasks'
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      })
+    }
+  })
+})
+
+
+
+
+
 //Add new task
 $(document).on("click", "#addButton", function() {
   var newTask = $("#inputNewTask").val();
@@ -113,19 +143,22 @@ $(document).on("click", "#addButton", function() {
 $(document).ready(function() {
   $('input[type="checkbox"]').click(function() {
     var taskCompletion = true;
+    var taskStatus = "Completed"
     var id = $(this).attr("data-id")
     var url = '/markdone/' + id;
     if ($(this).prop("checked") == true) {
       taskCompletion = true
     } else if ($(this).prop("checked") == false) {
       taskCompletion = false
+      taskStatus = "In progress"
     }
     if (taskCompletion != null) {
       $.ajax({
         type: "POST",
         url: url,
         data: {
-          param: taskCompletion
+          param1: taskCompletion,
+          param2: taskStatus
         },
         success: function(results) {
           console.log("adding new task");
@@ -142,12 +175,11 @@ $(document).ready(function() {
 
 
 
-// Set Deadline for Project
 
 
 
 
-// Add new TODOLIST
+
 
 
 $(function() {

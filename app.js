@@ -41,44 +41,59 @@ app.get("/", checkAuthenticated, function(req, res) {
   res.render("home")
 })
 
-app.get("/tasks", checkNotAuthenticated, (req, res) => {
+app.get("/tasks", checkNotAuthenticated, async (req, res) => {
   const userId = req.user.id;
-  pool.query('SELECT * FROM tasks ORDER BY id ASC', (err, results) => {
-    res.render("tasks", {
-      tasks: results.rows
-    })
+  const results = await pool.query('SELECT * FROM projects JOIN tasks ON projects.id = tasks.project_id JOIN users ON users.id = projects.user_id WHERE users.id = $1 ORDER BY tasks.id ASC ', [userId]);
+  console.log("RESULTS.....................");
+  console.log(results.rows);
+  res.render("tasks", {
+    data: results.rows
   })
 })
 
 
 // Add task
-app.post("/submitTask", function(req, res) {
-  pool.query("INSERT INTO tasks (description) VALUES ($1)", [req.body.param]);
+app.post("/submitTask", checkNotAuthenticated, function(req, res) {
+  const userId = req.user.id;
+  pool.query("INSERT INTO tasks (name) VALUES ($1)", [req.body.param]);
   res.redirect('/')
 })
 
 // Delete task by id
 app.get('/delete/:id', function(req, res) {
+  const userId = req.user.id;
   pool.query("DELETE FROM tasks WHERE id = ($1)", [req.params.id]);
   res.redirect('/')
 })
 
 // Edit task by ID
 app.post('/edit/:id', function(req, res) {
-  pool.query("UPDATE tasks SET description=$1 WHERE id=$2", [req.body.param, req.params.id]);
+  const userId = req.user.id;
+  pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.param, req.params.id]);
   res.redirect('/')
 })
 //Edit priority by Task ID
 app.post('/editPriority/:id', function(req, res) {
+  const userId = req.user.id;
   pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.param, req.params.id]);
   res.redirect('/')
 })
 
 // Mark task DONE/UNDONE
 app.post('/markdone/:id', function(req, res) {
-  pool.query("UPDATE tasks SET completion=$1 WHERE id=$2", [req.body.param, req.params.id]);
+  const userId = req.user.id;
+  pool.query("UPDATE tasks SET completion=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
   res.redirect('/')
 })
+
+app.post('/addNewProject', function(req, res) {
+  const userId = req.user.id;
+  pool.query("INSERT INTO projects (name, user_id) VALUES ($1,$2)", [req.body.param, userId])
+  res.redirect('/')
+})
+
+
+
 // Logout and end Session
 app.get('/logout', (req, res) => {
   req.logOut();

@@ -7,6 +7,12 @@
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </div>
 
+<% data.forEach((project)=>{ %>
+  <h1>
+    <%=project.%>
+  </h1>
+<%})%>
+
 <div class="project">
   <div class="projectHeader">
     <div class="projectTitle">
@@ -32,7 +38,6 @@
     </div>
   </div>
 
-
   <!-- New task tab -->
   <form class="" action="" method="">
     <div class="inputTab">
@@ -47,7 +52,7 @@
 
   <!-- Current tasks in the ToDoList -->
   <div class="taskList">
-    <% tasks.forEach(function(task){%>
+    <% data.forEach(function(task){%>
     <div class="taskRow">
       <div class="doneMark">
         <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
@@ -61,10 +66,9 @@
       </div>
       <div class="separator"></div>
         <% if(task.completion===true){ %>
-          <div style="text-decoration: line-through;" class="taskDescription">
-            <%= task.description%>
+          <div class="taskDescription thick">
+            <%= task.name%>
           </div>
-
           <%} else {%>
           <div class="taskDescription">
             <% if(task.priority == 4){%>
@@ -84,7 +88,7 @@
               <img width="20" src="images/priority1.png" alt="P1">
             </span>
             <%}%>
-            <%= task.description%>
+            <%= task.name%>
           </div>
           <%}%>
 

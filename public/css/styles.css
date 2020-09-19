@@ -22,7 +22,6 @@ body {
 
 .project {
   margin: 100px 15% 5% 15%;
-  
 }
 
 .jumbotron {
@@ -95,7 +94,6 @@ body {
 .inputTab {
   background-color: #D1D1D1;
   border: 1px solid #ababab;
-  /* display: table; */
   width: 100%;
   display: -webkit-flex;
 }
@@ -182,6 +180,13 @@ body {
   padding: 10px 0 10px 10px;
   /* margin-left: 10px; */
   border-right: 1px solid #ababab;
+}
+
+.thick {
+  text-decoration-line: line-through;
+  text-decoration-style: solid;
+  text-decoration-color: red;
+  text-decoration-thickness: 5px;
 }
 
 .taskOptions {
