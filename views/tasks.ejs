@@ -12,14 +12,14 @@
     <div class="projectTitle">
       <span>
         <a data-toggle="modal" data-target="#editDeadLineModal">
-          <i class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
+          <i id="setListDeadline" data-id="<%=project.id%>" class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
         </a>
       </span>
       <h5 value="" class="projectName"><%=project.name%></h5>
       <div class="projectButtons">
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal">
-            <i id="editProjectName"class="editProject fas fa-pencil-alt"data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
+            <i id="editProjectName" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
           </a>
         </span>
         <i class="separatorDash fas fa-minus"></i>
@@ -36,9 +36,9 @@
   <form class="" action="" method="">
     <div class="inputTab">
       <div class="plusButton fas fa-plus"></div>
-      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" type="text" required name="taskDescription" value=""
-        placeholder="  Start typing here to create a task..." required>
-      <button id="addButton"  data-id="<%=project.id%>" class="addButton" type="submit" value="Submit">
+      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" type="text" required name="taskDescription"
+        value="" placeholder="  Start typing here to create a task..." required>
+      <button id="addButton" data-id="<%=project.id%>" class="addButton" type="submit" value="Submit">
         <p>Add task</p>
       </button>
     </div>

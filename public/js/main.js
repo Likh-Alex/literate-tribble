@@ -1,3 +1,36 @@
+// Set Deadline for Project
+$(document).on("click", "#setListDeadline", function() {
+  var today = new Date()
+  alert(today.toDateString())
+  url = '/setProjectDeadline'
+  id = $(this).attr('data-id')
+  $("#confirmEditDeadline").on("click", function() {
+    var deadline = new Date($("#deadLineInput").val())
+    alert(today)
+    alert(deadline)
+    if (deadline > today) {
+      .ajax({
+        type: "POST",
+        url: url,
+        data: {
+          projectDeadline: deadline,
+          projectID: id
+        },
+        success: function(result) {
+          $("#editDeadLineModal").modal('hide')
+          console.log("setting project Deadline");
+          window.location.href = '/tasks'
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      })
+    }
+
+  })
+})
+
+
 // Edit Project Title by ID
 $(document).on("click", "#editProjectName", function() {
   var id = $(this).attr('data-id');
