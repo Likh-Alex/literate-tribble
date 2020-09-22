@@ -161,7 +161,7 @@ $(document).ready(function() {
           param2: taskStatus
         },
         success: function(results) {
-          console.log("adding new task");
+          console.log("Marking done/undone");
           window.location.href = "/tasks"
         },
         error: function(err) {

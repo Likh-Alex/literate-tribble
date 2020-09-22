@@ -6,13 +6,7 @@
 <div class="logoutButton">
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </div>
-
-<% data.forEach((project)=>{ %>
-  <h1>
-    <%=project.%>
-  </h1>
-<%})%>
-
+<%userData.forEach(function(project, i){%>
 <div class="project">
   <div class="projectHeader">
     <div class="projectTitle">
@@ -21,7 +15,7 @@
           <i class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
         </a>
       </span>
-      <h5 value="" class="projectName">Project name</h5>
+      <h5 value="" class="projectName"><%=project.name%></h5>
       <div class="projectButtons">
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal">
@@ -52,20 +46,20 @@
 
   <!-- Current tasks in the ToDoList -->
   <div class="taskList">
-    <% data.forEach(function(task){%>
+    <% userData[i].tasks.forEach(function(task){%>
     <div class="taskRow">
       <div class="doneMark">
         <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
-          <% if(task.completion===true){%>
-          <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completion%>" name="doneTaskMark" checked>
+          <% if(task.completed===true){%>
+          <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark" checked>
           <%}else{%>
-          <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completion%>" name="doneTaskMark">
+          <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark">
           <%}%>
 
         </span>
       </div>
       <div class="separator"></div>
-        <% if(task.completion===true){ %>
+        <% if(task.completed===true){ %>
           <div class="taskDescription thick">
             <%= task.name%>
           </div>
@@ -101,7 +95,7 @@
         <i class="separatorDash fas fa-minus"></i>
         <span data-toggle="tooltip" data-placement="bottom" title="Edit task">
           <a data-toggle="modal" data-target="#editTaskModal">
-            <i class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.description%>"></i>
+            <i class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
           </a>
         </span>
         <i class="separatorDash fas fa-minus"></i>
@@ -116,7 +110,5 @@
 
 
     <%- include('partials/modals') %>
-
-
-
+    <%})%>
     <%- include('partials/footer') %>

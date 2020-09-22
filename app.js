@@ -42,12 +42,31 @@ app.get("/", checkAuthenticated, function(req, res) {
 })
 
 app.get("/tasks", checkNotAuthenticated, async (req, res) => {
+  // Get the User Id
   const userId = req.user.id;
-  const results = await pool.query('SELECT * FROM projects JOIN tasks ON projects.id = tasks.project_id JOIN users ON users.id = projects.user_id WHERE users.id = $1 ORDER BY tasks.id ASC ', [userId]);
-  console.log("RESULTS.....................");
-  console.log(results.rows);
+
+  // const results = await pool.query(`SELECT * FROM projects JOIN tasks ON projects.id = tasks.project_id JOIN users ON projects.user_id = users.id WHERE users.id = ${userId} ORDER BY tasks.id ASC`);
+  // Query for all projects and tasks for this User
+  const userProjects = await pool.query(`SELECT * FROM projects WHERE projects.user_id = ${userId}`);
+
+  const userData = [];
+
+  for (let i = 0; i < userProjects.rows.length; i++) {
+    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =$1 ORDER BY tasks.id ASC `, [userProjects.rows[i].id]);
+    const thisProject = {
+      name: userProjects.rows[i].name,
+      tasks: userTasks.rows
+    };
+    userData.push(thisProject);
+  }
+
+  // console.log("************USER APP DATA************");
+  // console.log(userData);
+  // console.log(userData[0]);
+  // console.log(userData[1]);
   res.render("tasks", {
-    data: results.rows
+    userData: userData
+    // data: results.rows
   })
 })
 
@@ -74,6 +93,8 @@ app.post('/edit/:id', function(req, res) {
 })
 //Edit priority by Task ID
 app.post('/editPriority/:id', function(req, res) {
+  console.log("Editing priority");
+
   const userId = req.user.id;
   pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.param, req.params.id]);
   res.redirect('/')
@@ -81,8 +102,9 @@ app.post('/editPriority/:id', function(req, res) {
 
 // Mark task DONE/UNDONE
 app.post('/markdone/:id', function(req, res) {
+  console.log("Marking done");
   const userId = req.user.id;
-  pool.query("UPDATE tasks SET completion=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
+  pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
   res.redirect('/')
 })
 
@@ -110,43 +132,6 @@ app.post('/login', passport.authenticate('local', {
   failureRedirect: '/login',
   failureFlash: true
 }))
-// app.post("/login", async function(req, res) {
-//   var enteredEmail = req.body.email;
-//   var enteredPassword = req.body.password;
-//   let errors = [];
-//   var user = await pool.query("SELECT * FROM users WHERE email=$1", [enteredEmail])
-//   if (user.rowCount === 0) {
-//     errors.push({
-//       message: "This email is not registered"
-//     })
-//     res.render('login', {
-//       errors
-//     })
-//   } else {
-//     var userPassword = user.rows[0].password;
-//     bcrypt.compare(enteredPassword, userPassword, function(err, result) {
-//       if (result === true) {
-//         pool.query('SELECT * FROM tasks', (err, results) => {
-//           if (err) {
-//             console.log(err);
-//           } else {
-//             res.render("tasks", {
-//               tasks: results.rows
-//             })
-//           }
-//         })
-//       } else {
-//         errors.push({
-//           message: "Wrong password"
-//         })
-//         res.render('login', {
-//           errors
-//         });
-//       }
-//     })
-//   }
-// })
-
 
 // Register page save password in hash
 app.get("/register", checkAuthenticated, function(req, res) {
