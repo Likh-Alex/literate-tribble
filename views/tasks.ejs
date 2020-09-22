@@ -19,13 +19,13 @@
       <div class="projectButtons">
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal">
-            <i class="editProject fas fa-pencil-alt"></i>
+            <i id="editProjectName"class="editProject fas fa-pencil-alt"data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
           </a>
         </span>
         <i class="separatorDash fas fa-minus"></i>
         <span data-toggle="tooltip" data-placement="top" title="Delete Project">
           <a data-toggle="modal" data-target="#deleteProjectModal">
-            <i class="deleteProject far fa-trash-alt"></i>
+            <i id="deleteProject" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>
           </a>
         </span>
       </div>
@@ -36,9 +36,9 @@
   <form class="" action="" method="">
     <div class="inputTab">
       <div class="plusButton fas fa-plus"></div>
-      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Maximum length - 50 symbols" autocomplete="off" type="text" required name="taskDescription" value=""
+      <input id="inputNewTask" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" type="text" required name="taskDescription" value=""
         placeholder="  Start typing here to create a task..." required>
-      <button id="addButton" class="addButton" type="submit" value="Submit">
+      <button id="addButton"  data-id="<%=project.id%>" class="addButton" type="submit" value="Submit">
         <p>Add task</p>
       </button>
     </div>
@@ -55,8 +55,8 @@
           <%}else{%>
           <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark">
           <%}%>
-
         </span>
+
       </div>
       <div class="separator"></div>
         <% if(task.completed===true){ %>
@@ -110,5 +110,6 @@
 
 
     <%- include('partials/modals') %>
+
     <%})%>
     <%- include('partials/footer') %>

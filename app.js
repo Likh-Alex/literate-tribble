@@ -52,49 +52,65 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
   const userData = [];
 
   for (let i = 0; i < userProjects.rows.length; i++) {
-    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =$1 ORDER BY tasks.id ASC `, [userProjects.rows[i].id]);
+    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =${userProjects.rows[i].id} ORDER BY tasks.id ASC `);
     const thisProject = {
+      id: userProjects.rows[i].id,
       name: userProjects.rows[i].name,
       tasks: userTasks.rows
     };
     userData.push(thisProject);
   }
-
-  // console.log("************USER APP DATA************");
-  // console.log(userData);
+  console.log("\nCurrent User data\n");
+  console.log(userData);
   // console.log(userData[0]);
   // console.log(userData[1]);
   res.render("tasks", {
     userData: userData
-    // data: results.rows
   })
 })
 
 
 // Add task
 app.post("/submitTask", checkNotAuthenticated, function(req, res) {
+  console.log("adding new task");
   const userId = req.user.id;
-  pool.query("INSERT INTO tasks (name) VALUES ($1)", [req.body.param]);
+  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.param1, req.body.param2]);
   res.redirect('/')
 })
 
 // Delete task by id
 app.get('/delete/:id', function(req, res) {
+  console.log("deleting task");
   const userId = req.user.id;
   pool.query("DELETE FROM tasks WHERE id = ($1)", [req.params.id]);
   res.redirect('/')
 })
 
+// Delte Project By ID
+app.get('/deleteProject/:id', function(req,res){
+  console.log("deleting project");
+  pool.query("DELETE FROM projects WHERE id = ($1)", [req.params.id])
+  res.redirect('/')
+})
+
 // Edit task by ID
 app.post('/edit/:id', function(req, res) {
+  console.log("editing task");
   const userId = req.user.id;
   pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.param, req.params.id]);
   res.redirect('/')
 })
+
+// Edit Project name by ID
+app.post("/editProjectName", function(req,res){
+  console.log("Editing Project Name");
+  pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, req.body.projectID]);
+  res.redirect('/')
+})
+
 //Edit priority by Task ID
 app.post('/editPriority/:id', function(req, res) {
   console.log("Editing priority");
-
   const userId = req.user.id;
   pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.param, req.params.id]);
   res.redirect('/')
@@ -103,15 +119,16 @@ app.post('/editPriority/:id', function(req, res) {
 // Mark task DONE/UNDONE
 app.post('/markdone/:id', function(req, res) {
   console.log("Marking done");
-  const userId = req.user.id;
   pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
   res.redirect('/')
 })
 
-app.post('/addNewProject', function(req, res) {
-  const userId = req.user.id;
-  pool.query("INSERT INTO projects (name, user_id) VALUES ($1,$2)", [req.body.param, userId])
-  res.redirect('/')
+// Add new TodoList
+app.post('/addNewList', function(req, res) {
+  console.log("adding new List");
+  const userid = req.user.id;
+  pool.query("INSERT INTO projects (name, user_id) VALUES ($1,$2)", [req.body.param, userid])
+  res.redirect('/tasks')
 })
 
 
@@ -169,8 +186,6 @@ app.post("/register", async function(req, res) {
     });
   }
 })
-
-
 
 
 

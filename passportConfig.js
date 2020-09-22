@@ -11,7 +11,7 @@ function initialize(passport) {
         if (err) {
           throw err;
         }
-        console.log("************USER PERSONAL DATA************");
+        console.log("\nUser Personal Data \n");
         console.log(results.rows[0]);
         if (results.rows.length > 0) {
           const user = results.rows[0];

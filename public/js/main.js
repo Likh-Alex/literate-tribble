@@ -1,63 +1,113 @@
-//Delete task by ID
+// Edit Project Title by ID
+$(document).on("click", "#editProjectName", function() {
+  var id = $(this).attr('data-id');
+  $("#editProjectNameInput").val($(this).attr('data-name'))
+  // alert(id)
+  var url = '/editProjectName';
+  $('#confirmEditProjectName').on('click', function() {
+    var newTitle = $("#editProjectNameInput").val();
+    if (newTitle.length > 1 && newTitle.length <= 15) {
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+          projectName: newTitle,
+          projectID: id
+        },
+        success: function(result) {
+          $("#editProjectTitleModal").modal('hide')
+          console.log("editing project name");
+          window.location.href = '/tasks'
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      })
+    }
+  })
+})
+
+// Delete Project by ID
 $(document).ready(function() {
-  $(".deleteTask").on("click", function() {
+  $(".deleteProject").on("click", function() {
+    var id = $(this).attr('data-id');
+    var url = '/deleteProject/' + id;
+    $("#deleteProjectModal").on('show.bs.modal', function(event) {
+      $("#confirmDeleteProject").on("click", function() {
+        $.ajax({
+          url: url,
+          type: "GET",
+          success: function(result) {
+            $("#deleteProjectModal").modal('hide');
+            console.log("deleting project");
+            window.location.href = '/'
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        })
+      })
+    });
+  })
+})
+
+
+// Set priority for Task
+$(document).ready(function() {
+  $(".setTaskPriority").on("click", function() {
     var id = $(this).attr("data-id");
-    $("#deleteTaskModal").on('show.bs.modal', function(event) {
-      var url = '/delete/' + id;
-      // alert(id);
-      $(document).on("click", ".confirmDeleteTask", function() {
-        if (!null) {
+    $("#setPriorityModal").on('show.bs.modal', function(event) {
+      var url = '/editPriority/' + id;
+      $(".choose").on('click', function() {
+        var newPriority = $(this).val();
+        // alert(newPriority)
+        $(".confirmEditPriority").on("click", function() {
           $.ajax({
             url: url,
-            type: "GET",
+            type: "POST",
+            data: {
+              param: newPriority
+            },
             success: function(result) {
-              console.log(result);
-              $("#deleteTaskModal").modal('hide');
-              console.log("deleting task");
-              window.location.href = '/'
+              $("#setPriorityModal").modal('hide')
+              console.log("Setting priority");
+              window.location.href = '/tasks'
             },
             error: function(err) {
               console.log(err);
             }
           })
-        }
-      })
-    });
-  })
-
-
-  // Set priority for Task
-  $(document).ready(function() {
-    $(".setTaskPriority").on("click", function() {
-      var id = $(this).attr("data-id");
-      $("#setPriorityModal").on('show.bs.modal', function(event) {
-        var url = '/editPriority/' + id;
-        $(".choose").on('click', function() {
-          var newPriority = $(this).val();
-          // alert(newPriority)
-          $(".confirmEditPriority").on("click", function() {
-              $.ajax({
-                url: url,
-                type: "POST",
-                data: {
-                  param: newPriority
-                },
-                success: function(result) {
-                  $("#setPriorityModal").modal('hide')
-                  console.log("Setting priority");
-                  window.location.href = '/tasks'
-                },
-                error: function(err) {
-                  console.log(err);
-                }
-            })
-          })
         })
       })
     })
   })
+})
 
 
+//Delete Task by ID
+$(document).ready(function() {
+  $(".deleteTask").on("click", function() {
+    var id = $(this).attr("data-id");
+    $("#deleteTaskModal").on('show.bs.modal', function(event) {
+      var url = '/delete/' + id;
+      alert(id);
+      $(document).on("click", ".confirmDeleteTask", function() {
+        $.ajax({
+          url: url,
+          type: "GET",
+          success: function(result) {
+            console.log(result);
+            $("#deleteTaskModal").modal('hide');
+            console.log("deleting task");
+            window.location.href = '/'
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        })
+      })
+    });
+  })
 
   //Edit existing task by ID
   $(document).on("click", '.editTask', function() {
@@ -88,45 +138,18 @@ $(document).ready(function() {
 })
 
 
-// Add new TODOLIST
-$('.addNewProject').on("click", function(){
-  $('#confirmNewList').on('click', function(){
-    var newProject = $('#newListNameInput').val();
-    var url = '/addNewProject';
-    if(newProject !== null){
-      $.ajax({
-        type: "POST",
-        url: url,
-        data: {
-          param: newProject
-        },
-        success: function(result) {
-          $("#newProjectModal").modal('hide')
-          console.log("Adding new project");
-          window.location.href = '/tasks'
-        },
-        error: function(err) {
-          console.log(err);
-        }
-      })
-    }
-  })
-})
-
-
-
-
-
 //Add new task
 $(document).on("click", "#addButton", function() {
   var newTask = $("#inputNewTask").val();
+  var project = $(this).attr("data-id");
   if (newTask !== '' && newTask.length >= 3) {
     var url = '/submitTask';
     $.ajax({
       type: "POST",
       url: url,
       data: {
-        param: $("#inputNewTask").val()
+        param1: $("#inputNewTask").val(),
+        param2: project
       },
       success: function(results) {
         console.log("adding new task");
@@ -173,11 +196,32 @@ $(document).ready(function() {
 });
 
 
-
-
-
-
-
+// Add new TODO list
+$('#addNewProjectBtn').on("click", function() {
+  $("#newProjectModal").on('show.bs.modal', function(event) {
+    var url = '/addNewList';
+    $("#confirmNewList").on("click", function() {
+      var newListTitle = $("#newListNameInput").val()
+      if (newListTitle !== null && newListTitle.length >= 3) {
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: {
+            param: $("#newListNameInput").val()
+          },
+          success: function(result) {
+            $("#newProjectModal").modal('hide')
+            console.log("Adding new list");
+            window.location.href = '/tasks'
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        })
+      }
+    })
+  })
+})
 
 
 
