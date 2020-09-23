@@ -61,11 +61,15 @@ body {
   float: right;
   color: #ababab;
   display: inline-block;
+  visibility: hidden;
 }
 
 .projectButtons .separatorDash {
   font-size: 15px;
   color: #ababab;
+}
+.projectHeader:hover .projectButtons {
+  visibility: visible;
 }
 
 .calendar {
@@ -178,7 +182,6 @@ body {
   height: auto;
   overflow: hidden;
   padding: 10px 0 10px 10px;
-  /* margin-left: 10px; */
   border-right: 1px solid #ababab;
 }
 

@@ -1,19 +1,17 @@
 // Set Deadline for Project
 $(document).on("click", "#setListDeadline", function() {
   var today = new Date()
-  alert(today.toDateString())
+  // alert(today)
   url = '/setProjectDeadline'
   id = $(this).attr('data-id')
   $("#confirmEditDeadline").on("click", function() {
     var deadline = new Date($("#deadLineInput").val())
-    alert(today)
-    alert(deadline)
     if (deadline > today) {
-      .ajax({
+      $.ajax({
         type: "POST",
         url: url,
         data: {
-          projectDeadline: deadline,
+          projectDeadline: deadline.toISOString(),
           projectID: id
         },
         success: function(result) {
@@ -25,8 +23,9 @@ $(document).on("click", "#setListDeadline", function() {
           console.log(err);
         }
       })
+    } else {
+      alert("Deadline must be later then today")
     }
-
   })
 })
 
@@ -123,7 +122,7 @@ $(document).ready(function() {
     var id = $(this).attr("data-id");
     $("#deleteTaskModal").on('show.bs.modal', function(event) {
       var url = '/delete/' + id;
-      alert(id);
+      // alert(id);
       $(document).on("click", ".confirmDeleteTask", function() {
         $.ajax({
           url: url,

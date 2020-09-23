@@ -42,41 +42,31 @@ app.get("/", checkAuthenticated, function(req, res) {
 })
 
 app.get("/tasks", checkNotAuthenticated, async (req, res) => {
-  // Get the User Id
   const userId = req.user.id;
 
-  // const results = await pool.query(`SELECT * FROM projects JOIN tasks ON projects.id = tasks.project_id JOIN users ON projects.user_id = users.id WHERE users.id = ${userId} ORDER BY tasks.id ASC`);
   // Query for all projects and tasks for this User
-  const userProjects = await pool.query(`SELECT * FROM projects WHERE projects.user_id = ${userId}`);
+  const userProjects = await pool.query(`SELECT * FROM projects WHERE projects.user_id = ${userId} ORDER BY projects.id ASC`);
 
   const userData = [];
 
   for (let i = 0; i < userProjects.rows.length; i++) {
-    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =${userProjects.rows[i].id} ORDER BY tasks.id ASC `);
+    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =${userProjects.rows[i].id} `);
     const thisProject = {
       id: userProjects.rows[i].id,
       name: userProjects.rows[i].name,
-      tasks: userTasks.rows
+      tasks: userTasks.rows,
+      deadline: userProjects.rows[i].p_deadline
     };
     userData.push(thisProject);
   }
   console.log("\nCurrent User data\n");
   console.log(userData);
-  // console.log(userData[0]);
-  // console.log(userData[1]);
+
   res.render("tasks", {
     userData: userData
   })
 })
 
-
-// Add task
-app.post("/submitTask", checkNotAuthenticated, function(req, res) {
-  console.log("adding new task");
-  const userId = req.user.id;
-  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.param1, req.body.param2]);
-  res.redirect('/')
-})
 
 // Delete task by id
 app.get('/delete/:id', function(req, res) {
@@ -87,9 +77,25 @@ app.get('/delete/:id', function(req, res) {
 })
 
 // Delte Project By ID
-app.get('/deleteProject/:id', function(req,res){
+app.get('/deleteProject/:id', function(req, res) {
   console.log("deleting project");
   pool.query("DELETE FROM projects WHERE id = ($1)", [req.params.id])
+  res.redirect('/')
+})
+
+// Add task
+app.post("/submitTask", checkNotAuthenticated, function(req, res) {
+  console.log("adding new task");
+  const userId = req.user.id;
+  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.param1, req.body.param2]);
+  res.redirect('/')
+})
+
+//Set Deadline for Project
+app.post("/setProjectDeadline", function(req, res) {
+  console.log("Setting deadline for Project");
+  console.log(req.body);
+  pool.query(`UPDATE projects SET p_deadline = TO_DATE('${req.body.projectDeadline}', 'YYYY/MM/DD') WHERE id = ${req.body.projectID}`);
   res.redirect('/')
 })
 
@@ -102,7 +108,7 @@ app.post('/edit/:id', function(req, res) {
 })
 
 // Edit Project name by ID
-app.post("/editProjectName", function(req,res){
+app.post("/editProjectName", function(req, res) {
   console.log("Editing Project Name");
   pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, req.body.projectID]);
   res.redirect('/')
