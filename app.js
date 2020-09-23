@@ -101,9 +101,18 @@ app.post("/setProjectDeadline", function(req, res) {
 
 // Edit task by ID
 app.post('/edit/:id', function(req, res) {
+  var deadline = req.body.deadline;
+  var isoDeadline = deadline.toISOString;
+  console.log(isoDeadline);
+
+  console.log(req.body);
   console.log("editing task");
   const userId = req.user.id;
-  pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.param, req.params.id]);
+  pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.task, req.body.id]);
+  if(req.body.deadline !== 'Invalid Date'){
+    var deadline = req.body.deadline;
+    pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
+  }
   res.redirect('/')
 })
 

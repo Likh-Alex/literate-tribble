@@ -27,18 +27,21 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <form class="" action="" method="">
-        <input type="hidden" id="editTaskId" name="id" value="" />
+        <input type="hidden" id="editTaskId" name="id" value=""/>
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
         </div>
         <div class="modal-body">
           <div class="input-group">
-            <input autocomplete="off" id="editTaskDescription" pattern="[A-Za-z0-9 ]{3,25} name=" taskDescription" class="form-control" aria-label="With textarea"></input>
+            <input autocomplete="off" id="editTaskDescription" pattern="[A-Za-z0-9 ].{3,25} name="taskDescription" class="form-control" required>
+          </div>
+          <div class="input-group">
+            <input data-toggle="tooltip" data-placement="bottom" title="Must be later than today" id="deadLineEntry" type="date" name="" value="" class="form-control">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="confirmEditTask btn btn-primary">Edit Task</button>
+          <button type="button" id="confirmEditTask" class="confirmEditTask btn btn-primary">Edit Task</button>
         </div>
       </form>
     </div>
@@ -120,7 +123,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button id="confirmEditDeadline"type="button" class="btn btn-primary">Edit Deadline</button>
+          <button id="confirmEditDeadline" type="button" class="btn btn-primary">Edit Deadline</button>
         </div>
       </form>
     </div>

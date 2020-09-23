@@ -57,20 +57,21 @@
 <!-- Current tasks in the ToDoList -->
 <div class="taskList">
   <% userData[i].tasks.forEach(function(task){%>
-  <% if (task.t_deadline !== null){%>
-  <%  var taskDeadline = task.t_deadline.toDateString()%>
-  <div class="taskRow" data-toggle="tooltip" data-placement="top" title="Deadline <%=taskDeadline%>" style="border-top: 0;">
-    <%}%>
-  <div class="taskRow">
+  <%if(task.t_deadline === null ){%>
+  <div class="taskRow" >
+    <%}else{%>
+    <% var taskDeadline = task.t_deadline.toDateString();%>
+    <div class="taskRow" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
+      <%}%>
+
     <div class="doneMark">
       <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
         <% if(task.completed===true){%>
-    <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark" checked>
-    <%}else{%>
-    <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark">
-    <%}%>
+      <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark" checked>
+      <%}else{%>
+      <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark">
+      <%}%>
         </span>
-
       </div>
       <div class="separator"></div>
 
@@ -80,57 +81,59 @@
 
 <!-- Task description -->
         <% if(task.completed===true){ %>
-    <div class="taskDescription thick">
-      <span><%= task.name%></span>
-    </div>
-    <%} else {%>
-    <div class="taskDescription">
-      <% if(task.priority == 4){%>
-      <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Urgent">
-        <img width="20" src="images/priority4.png" alt="P4">
-      </span>
-      <%}else if(task.priority == 3){%>
-      <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="High">
-        <img styl width="20" src="images/priority3.png" alt="P3">
-      </span>
-      <%}else if(task.priority == 2){%>
-      <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Normal">
-        <img width="20" src="images/priority2.png" alt="P2">
-      </span>
-      <%}else if(task.priority == 1){%>
-      <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Low">
-        <img width="20" src="images/priority1.png" alt="P1">
-      </span>
-      <%}%>
+      <div class="taskDescription thick">
+        <span><%= task.name%></span>
+      </div>
+      <%} else {%>
+      <div class="taskDescription">
+        <% if(task.priority == 4){%>
+        <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Urgent">
+          <img width="20" src="images/priority4.png" alt="P4">
+        </span>
+        <%}else if(task.priority == 3){%>
+        <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="High">
+          <img styl width="20" src="images/priority3.png" alt="P3">
+        </span>
+        <%}else if(task.priority == 2){%>
+        <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Normal">
+          <img width="20" src="images/priority2.png" alt="P2">
+        </span>
+        <%}else if(task.priority == 1){%>
+        <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Low">
+          <img width="20" src="images/priority1.png" alt="P1">
+        </span>
+        <%}%>
           <span><%= task.name%></span>
-    </div>
-    <%}%>
+      </div>
+      <%}%>
 
 <!-- Task options -->
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
           <a data-toggle="modal" data-target="#setPriorityModal">
             <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
-    </a>
-    </span>
-    <i class="separatorDash fas fa-minus"></i>
-    <span data-toggle="tooltip" data-placement="bottom" title="Edit task">
-      <a data-toggle="modal" data-target="#editTaskModal">
-        <i class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
       </a>
-    </span>
-    <i class="separatorDash fas fa-minus"></i>
-    <span data-toggle="tooltip" data-placement="bottom" title="Delete task">
-      <a data-toggle="modal" data-target="#deleteTaskModal">
-        <i class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
-      </a>
-    </span>
+      </span>
+      <i class="separatorDash fas fa-minus"></i>
+
+      <span data-toggle="tooltip" data-placement="bottom" title="Edit task">
+        <a data-toggle="modal" data-target="#editTaskModal">
+          <i id="editTask" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
+        </a>
+      </span>
+
+      <i class="separatorDash fas fa-minus"></i>
+      <span data-toggle="tooltip" data-placement="bottom" title="Delete task">
+        <a data-toggle="modal" data-target="#deleteTaskModal">
+          <i class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
+        </a>
+      </span>
+    </div>
   </div>
-</div>
 
 
-<%})%>
-<%- include('partials/modals') %>
+  <%})%>
+  <%- include('partials/modals') %>
 
-<%})%>
-<%- include('partials/footer') %>
+  <%})%>
+  <%- include('partials/footer') %>

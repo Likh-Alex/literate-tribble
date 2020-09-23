@@ -24,8 +24,39 @@ $(document).on("click", "#setListDeadline", function() {
         }
       })
     } else {
-      alert("Deadline must be later then today")
+      alert("Deadline must be later than today")
     }
+  })
+})
+
+//Edit existing task by ID
+$(document).on("click", '#editTask', function() {
+  $("#editTaskDescription").val($(this).attr('data-description'));
+  $("#editTaskId").val($(this).attr("data-id"));
+  var id = $(this).attr("data-id");
+  var url = '/edit/' + id;
+
+  $(".confirmEditTask").on("click", function() {
+    var newTask = $("#editTaskDescription").val();
+    var deadline = new Date($("#deadLineEntry").val())
+    // alert(typeof(deadline))
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: {
+        task: newTask,
+        deadline: deadline.toLocaleString(),
+        id: id
+      },
+      success: function(result) {
+        $("#editTaskModal").modal('hide')
+        console.log("editing task");
+        window.location.href = '/tasks'
+      },
+      error: function(err) {
+        console.log(err);
+      }
+    })
   })
 })
 
@@ -84,92 +115,6 @@ $(document).ready(function() {
 })
 
 
-// Set priority for Task
-$(document).ready(function() {
-  $(".setTaskPriority").on("click", function() {
-    var id = $(this).attr("data-id");
-    $("#setPriorityModal").on('show.bs.modal', function(event) {
-      var url = '/editPriority/' + id;
-      $(".choose").on('click', function() {
-        var newPriority = $(this).val();
-        // alert(newPriority)
-        $(".confirmEditPriority").on("click", function() {
-          $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-              param: newPriority
-            },
-            success: function(result) {
-              $("#setPriorityModal").modal('hide')
-              console.log("Setting priority");
-              window.location.href = '/tasks'
-            },
-            error: function(err) {
-              console.log(err);
-            }
-          })
-        })
-      })
-    })
-  })
-})
-
-
-//Delete Task by ID
-$(document).ready(function() {
-  $(".deleteTask").on("click", function() {
-    var id = $(this).attr("data-id");
-    $("#deleteTaskModal").on('show.bs.modal', function(event) {
-      var url = '/delete/' + id;
-      // alert(id);
-      $(document).on("click", ".confirmDeleteTask", function() {
-        $.ajax({
-          url: url,
-          type: "GET",
-          success: function(result) {
-            console.log(result);
-            $("#deleteTaskModal").modal('hide');
-            console.log("deleting task");
-            window.location.href = '/'
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
-      })
-    });
-  })
-
-  //Edit existing task by ID
-  $(document).on("click", '.editTask', function() {
-    $("#editTaskDescription").val($(this).attr('data-description'));
-    $("#editTaskId").val($(this).attr("data-id"));
-    var id = $(this).attr("data-id");
-    var url = '/edit/' + id;
-    $(".confirmEditTask").on("click", function(event) {
-      if (!null) {
-        $.ajax({
-          type: "POST",
-          url: url,
-          data: {
-            param: $("#editTaskDescription").val()
-          },
-          success: function(result) {
-            $("#editTaskModal").modal('hide')
-            console.log("editing task");
-            window.location.href = '/tasks'
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
-      }
-    })
-  })
-})
-
-
 //Add new task
 $(document).on("click", "#addButton", function() {
   var newTask = $("#inputNewTask").val();
@@ -193,6 +138,7 @@ $(document).on("click", "#addButton", function() {
     })
   }
 })
+
 
 // Mark task as DONE/UNDONE
 $(document).ready(function() {
@@ -226,6 +172,70 @@ $(document).ready(function() {
     }
   });
 });
+
+
+// Set priority for Task
+$(document).ready(function() {
+  $(".setTaskPriority").on("click", function() {
+    var id = $(this).attr("data-id");
+    $("#setPriorityModal").on('show.bs.modal', function(event) {
+      var url = '/editPriority/' + id;
+      $(".choose").on('click', function() {
+        var newPriority = $(this).val();
+        // alert(newPriority)
+        $(".confirmEditPriority").on("click", function() {
+          $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+              param: newPriority
+            },
+            success: function(result) {
+              $("#setPriorityModal").modal('hide')
+              console.log("Setting priority");
+              window.location.href = '/tasks'
+            },
+            error: function(err) {
+              console.log(err);
+            }
+          })
+        })
+      })
+    })
+  })
+})
+
+
+// dawwwwwwwwwwwwwefrgthrytjuymnhtbgfdvfrsdewfrgthytnhjgnhbfvdrsegtnhgjmhgnhfbgdfvgnhgfbf
+
+
+
+//Delete Task by ID
+$(document).ready(function() {
+  $(".deleteTask").on("click", function() {
+    var id = $(this).attr("data-id");
+    $("#deleteTaskModal").on('show.bs.modal', function(event) {
+      var url = '/delete/' + id;
+      // alert(id);
+      $(document).on("click", ".confirmDeleteTask", function() {
+        $.ajax({
+          url: url,
+          type: "GET",
+          success: function(result) {
+            console.log(result);
+            $("#deleteTaskModal").modal('hide');
+            console.log("deleting task");
+            window.location.href = '/'
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        })
+      })
+    });
+  })
+})
+
 
 
 // Add new TODO list
