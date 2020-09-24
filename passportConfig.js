@@ -24,13 +24,13 @@ function initialize(passport) {
               return done(null, user)
             } else {
               return done(null, false, {
-                message: "Passport Password is not correct"
+                message: "Password is not correct"
               });
             }
           })
         } else {
           return done(null, false, {
-            message: "Passport Email is not registered"
+            message: "Email is not registered"
           })
         }
       }

@@ -6,7 +6,7 @@
 <div class="logoutButton">
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </div>
-
+<%if(userData !== null){%>
 <%userData.forEach(function(project, i){%>
 <div class="project">
   <div class="projectHeader">
@@ -33,7 +33,6 @@
       </a>
       </span>
       <i class="separatorDash fas fa-minus"></i>
-      
       <span data-toggle="tooltip" data-placement="top" title="Delete Project">
         <a data-toggle="modal" data-target="#deleteProjectModal">
           <i id="deleteProject" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>
@@ -47,8 +46,8 @@
 <form class="" action="" method="">
   <div class="inputTab">
     <div class="plusButton fas fa-plus"></div>
-    <input id="inputNewTask<%=project.id%>" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" name="taskDescription"
-      value="" type="text" placeholder="  Start typing here to create a task..." required>
+    <input id="inputNewTask<%=project.id%>" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" name="taskDescription" value=""
+      type="text" placeholder="  Start typing here to create a task..." required>
     <button id="addButton" data-id="<%=project.id %>" class="addButton" type="submit" value="Submit">
       <p>Add task</p>
     </button>
@@ -58,7 +57,7 @@
 <!-- Current tasks in the ToDoList -->
 <div class="taskList">
   <% userData[i].tasks.forEach(function(task){%>
-  <%if(task.t_deadline === null ){%>
+  <%if(task.t_deadline === null || task.completed === true ){%>
   <div class="taskRow">
     <%}else{%>
     <% var taskDeadline = task.t_deadline.toDateString();%>
@@ -129,8 +128,14 @@
   </div>
 
 
-  <%})%>
-  <%- include('partials/modals') %>
+
+
 
   <%})%>
+  <%- include('partials/modals') %>
+  <%})%>
   <%- include('partials/footer') %>
+
+
+  <%}%>
+<%- include('partials/modals') %>

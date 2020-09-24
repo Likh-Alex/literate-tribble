@@ -34,10 +34,10 @@ $(document).on("click", '#editTask', function() {
   $("#editTaskDescription").val($(this).attr('data-description'));
   $("#editTaskId").val($(this).attr("data-id"));
   var id = $(this).attr("data-id");
-  var url = '/edit/' + id;
-
+  var url = '/edit';
   $(".confirmEditTask").on("click", function() {
     var newTask = $("#editTaskDescription").val();
+    // alert(newTask)
     var deadline = new Date($("#deadLineEntry").val())
     $.ajax({
       type: "POST",
@@ -92,7 +92,7 @@ $(document).on("click", "#editProjectName", function() {
 // Delete Project by ID
 $(document).on('click', "#deleteProject", function() {
   var id = $(this).attr('data-id');
-  alert(id)
+  // alert(id)
   var url = '/deleteProject/' + id;
   $("#deleteProjectModal").on('show.bs.modal', function() {
     $("#confirmDeleteProject").on("click", function() {
@@ -102,7 +102,7 @@ $(document).on('click', "#deleteProject", function() {
         success: function() {
           $("#deleteProjectModal").modal('hide');
           console.log("deleting project");
-          window.location.href = '/tasks'
+          window.location.href = '/'
         },
         error: function(err) {
           console.log(err);
@@ -129,7 +129,7 @@ $(document).on("click", "#addButton", function(event) {
       },
       success: function(results) {
         console.log("adding new task");
-        window.location.href = "/tasks"
+        window.location.href = "/"
       },
       error: function(err) {
         console.log(err);
@@ -261,8 +261,6 @@ $('#addNewProjectBtn').on("click", function() {
     })
   })
 })
-
-
 
 
 $(function() {
