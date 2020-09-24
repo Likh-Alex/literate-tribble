@@ -39,7 +39,6 @@ $(document).on("click", '#editTask', function() {
   $(".confirmEditTask").on("click", function() {
     var newTask = $("#editTaskDescription").val();
     var deadline = new Date($("#deadLineEntry").val())
-    // alert(typeof(deadline))
     $.ajax({
       type: "POST",
       url: url,
@@ -116,17 +115,17 @@ $(document).ready(function() {
 
 
 //Add new task
-$(document).on("click", "#addButton", function() {
-  var newTask = $("#inputNewTask").val();
-  var project = $(this).attr("data-id");
+$(document).on("click", "#addButton", function(event) {
+  var id = $(this).attr("data-id");
+  var newTask = $("#inputNewTask" + id).val()
+  var url = '/submitTask';
   if (newTask !== '' && newTask.length >= 3) {
-    var url = '/submitTask';
     $.ajax({
-      type: "POST",
       url: url,
+      type: "POST",
       data: {
-        param1: $("#inputNewTask").val(),
-        param2: project
+        name: newTask,
+        id: id
       },
       success: function(results) {
         console.log("adding new task");
@@ -180,6 +179,7 @@ $(document).ready(function() {
     var id = $(this).attr("data-id");
     $("#setPriorityModal").on('show.bs.modal', function(event) {
       var url = '/editPriority/' + id;
+
       $(".choose").on('click', function() {
         var newPriority = $(this).val();
         // alert(newPriority)
@@ -204,9 +204,6 @@ $(document).ready(function() {
     })
   })
 })
-
-
-// dawwwwwwwwwwwwwefrgthrytjuymnhtbgfdvfrsdewfrgthytnhjgnhbfvdrsegtnhgjmhgnhfbgdfvgnhgfbf
 
 
 

@@ -46,7 +46,6 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
 
   // Query for all projects and tasks for this User
   const userProjects = await pool.query(`SELECT * FROM projects WHERE projects.user_id = ${userId} ORDER BY projects.id ASC`);
-
   const userData = [];
 
   for (let i = 0; i < userProjects.rows.length; i++) {
@@ -61,7 +60,6 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
   }
   console.log("\nCurrent User data\n");
   console.log(userData);
-
   res.render("tasks", {
     userData: userData
   })
@@ -73,22 +71,23 @@ app.get('/delete/:id', function(req, res) {
   console.log("deleting task");
   const userId = req.user.id;
   pool.query("DELETE FROM tasks WHERE id = ($1)", [req.params.id]);
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
 // Delte Project By ID
 app.get('/deleteProject/:id', function(req, res) {
   console.log("deleting project");
   pool.query("DELETE FROM projects WHERE id = ($1)", [req.params.id])
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
-// Add task
-app.post("/submitTask", checkNotAuthenticated, function(req, res) {
+// Add New task
+app.post("/submitTask", function(req, res) {
+  console.log(req.body);
   console.log("adding new task");
   const userId = req.user.id;
-  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.param1, req.body.param2]);
-  res.redirect('/')
+  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
+  res.redirect('/tasks')
 })
 
 //Set Deadline for Project
@@ -96,11 +95,11 @@ app.post("/setProjectDeadline", function(req, res) {
   console.log("Setting deadline for Project");
   console.log(req.body);
   pool.query(`UPDATE projects SET p_deadline = TO_DATE('${req.body.projectDeadline}', 'YYYY/MM/DD') WHERE id = ${req.body.projectID}`);
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
 // Edit task by ID
-app.post('/edit/:id', function(req, res) {
+app.post('/edit', function(req, res) {
   var deadline = req.body.deadline;
   var isoDeadline = deadline.toISOString;
   console.log(isoDeadline);
@@ -113,14 +112,14 @@ app.post('/edit/:id', function(req, res) {
     var deadline = req.body.deadline;
     pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
   }
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
 // Edit Project name by ID
 app.post("/editProjectName", function(req, res) {
   console.log("Editing Project Name");
   pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, req.body.projectID]);
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
 //Edit priority by Task ID
@@ -128,14 +127,14 @@ app.post('/editPriority/:id', function(req, res) {
   console.log("Editing priority");
   const userId = req.user.id;
   pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.param, req.params.id]);
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
 // Mark task DONE/UNDONE
 app.post('/markdone/:id', function(req, res) {
   console.log("Marking done");
   pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
-  res.redirect('/')
+  res.redirect('/tasks')
 })
 
 // Add new TodoList
@@ -148,7 +147,7 @@ app.post('/addNewList', function(req, res) {
 
 
 
-// Logout and end Session
+// Logout and END Session
 app.get('/logout', (req, res) => {
   req.logOut();
   res.redirect('/')
@@ -158,7 +157,7 @@ app.get('/logout', (req, res) => {
 app.get("/login", checkAuthenticated, function(req, res) {
   res.render('login')
 })
-//Check if user exists and login also compare password entered and saved in DB
+//Check if user exists and login as well compare password entered and saved in DB
 app.post('/login', passport.authenticate('local', {
   successRedirect: '/tasks',
   failureRedirect: '/login',
