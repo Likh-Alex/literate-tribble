@@ -90,28 +90,28 @@ $(document).on("click", "#editProjectName", function() {
 })
 
 // Delete Project by ID
-$(document).ready(function() {
-  $(".deleteProject").on("click", function() {
-    var id = $(this).attr('data-id');
-    var url = '/deleteProject/' + id;
-    $("#deleteProjectModal").on('show.bs.modal', function(event) {
-      $("#confirmDeleteProject").on("click", function() {
-        $.ajax({
-          url: url,
-          type: "GET",
-          success: function(result) {
-            $("#deleteProjectModal").modal('hide');
-            console.log("deleting project");
-            window.location.href = '/'
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
+$(document).on('click', "#deleteProject", function() {
+  var id = $(this).attr('data-id');
+  alert(id)
+  var url = '/deleteProject/' + id;
+  $("#deleteProjectModal").on('show.bs.modal', function() {
+    $("#confirmDeleteProject").on("click", function() {
+      $.ajax({
+        url: url,
+        type: "GET",
+        success: function() {
+          $("#deleteProjectModal").modal('hide');
+          console.log("deleting project");
+          window.location.href = '/tasks'
+        },
+        error: function(err) {
+          console.log(err);
+        }
       })
-    });
-  })
+    })
+  });
 })
+
 
 
 //Add new task

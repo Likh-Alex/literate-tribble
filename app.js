@@ -77,7 +77,10 @@ app.get('/delete/:id', function(req, res) {
 // Delte Project By ID
 app.get('/deleteProject/:id', function(req, res) {
   console.log("deleting project");
-  pool.query("DELETE FROM projects WHERE id = ($1)", [req.params.id])
+  console.log(req.params.id);
+  pool.query(`DELETE FROM tasks WHERE tasks.project_id = $1`, [req.params.id])
+  console.log("Deleted tasks for project");
+  pool.query("DELETE FROM projects WHERE id = $1", [req.params.id])
   res.redirect('/tasks')
 })
 
@@ -108,7 +111,7 @@ app.post('/edit', function(req, res) {
   console.log("editing task");
   const userId = req.user.id;
   pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.task, req.body.id]);
-  if(req.body.deadline !== 'Invalid Date'){
+  if (req.body.deadline !== 'Invalid Date') {
     var deadline = req.body.deadline;
     pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
   }

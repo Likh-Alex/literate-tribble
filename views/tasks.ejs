@@ -6,6 +6,7 @@
 <div class="logoutButton">
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </div>
+
 <%userData.forEach(function(project, i){%>
 <div class="project">
   <div class="projectHeader">
@@ -32,6 +33,7 @@
       </a>
       </span>
       <i class="separatorDash fas fa-minus"></i>
+      
       <span data-toggle="tooltip" data-placement="top" title="Delete Project">
         <a data-toggle="modal" data-target="#deleteProjectModal">
           <i id="deleteProject" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>

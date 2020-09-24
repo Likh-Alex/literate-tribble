@@ -28,6 +28,10 @@ body {
   margin: 10% 15% 5% 15%;
 }
 
+.logoutButton {
+  text-align: right;
+}
+
 /* Header section */
 .projectHeader {
   background-color: #245fb3;
@@ -68,6 +72,7 @@ body {
   font-size: 15px;
   color: #ababab;
 }
+
 .projectHeader:hover .projectButtons {
   visibility: visible;
 }
@@ -211,7 +216,7 @@ body {
   border-bottom-right-radius: 15px;
 }
 
-.taskOptions .deleteTask, .editTask, .setTaskPriority{
+.taskOptions .deleteTask, .editTask, .setTaskPriority {
   font-size: 15px;
   cursor: pointer;
   color: #ababab;
@@ -230,15 +235,22 @@ body {
 
 .addNewProject {
   text-shadow: 1px 1px 2px black;
-  padding: 6px 15px;
-  color: white;
+  padding: 10px 20px;
   background-color: #245fb3;
   border: 1px outset #4979B3;
+  color: white;
+  font-size: 18px;
   border-radius: 3px;
   background-image: url("https://www.transparenttextures.com/patterns/binding-dark.png");
   margin-top: 50px;
 }
 
 .addNewProject h6 {
-  margin-bottom: 0;
+  display: inline-block;
+}
+
+.addNewProject img {
+  margin-right: 15px;
+  height: 25px;
+  display: inline-block;
 }
