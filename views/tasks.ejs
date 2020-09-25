@@ -16,7 +16,6 @@
           <i id="setListDeadline" data-id="<%=project.id%>" class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
         </a>
       </span>
-
       <%if(project.deadline == null){%>
       <h5 value="" class="projectName"><%=project.name%></h5>
       <%}else{%>
@@ -25,7 +24,6 @@
         <%=project.name%>
       </h5>
       <%}%>
-
       <div class="projectButtons">
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal">
@@ -41,7 +39,6 @@
     </div>
   </div>
 </div>
-
 <!-- New task Input Tab -->
 <form class="" action="" method="">
   <div class="inputTab">
@@ -53,7 +50,6 @@
     </button>
   </div>
 </form>
-
 <!-- Current tasks in the ToDoList -->
 <div class="taskList">
   <% userData[i].tasks.forEach(function(task){%>
@@ -73,8 +69,6 @@
         </span>
       </div>
       <div class="separator"></div>
-
-
       <!-- Task description -->
         <% if(task.completed===true){ %>
       <div class="taskDescription thick">
@@ -102,7 +96,6 @@
           <span><%= task.name%></span>
       </div>
       <%}%>
-
       <!-- Task options -->
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
@@ -111,13 +104,11 @@
       </a>
       </span>
       <i class="separatorDash fas fa-minus"></i>
-
       <span data-toggle="tooltip" data-placement="bottom" title="Edit task">
         <a data-toggle="modal" data-target="#editTaskModal">
           <i id="editTask" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
         </a>
       </span>
-
       <i class="separatorDash fas fa-minus"></i>
       <span data-toggle="tooltip" data-placement="bottom" title="Delete task">
         <a data-toggle="modal" data-target="#deleteTaskModal">
@@ -126,16 +117,9 @@
       </span>
     </div>
   </div>
-
-
-
-
-
   <%})%>
   <%- include('partials/modals') %>
   <%})%>
   <%- include('partials/footer') %>
-
-
   <%}%>
 <%- include('partials/modals') %>

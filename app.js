@@ -14,7 +14,7 @@ const initializePassport = require('./passportConfig.js');
 initializePassport(passport);
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
+const fs = require('fs-extra')
 
 const app = express();
 app.use(express.static("public"))
@@ -53,8 +53,15 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
     };
     userData.push(thisProject);
   }
+  const file = "public/js/userData.js"
+
+  // fs.outputJson(file, userData, function (err) {
+  //   if (err) throw err;
+  //   console.log('Saved user Data to '+file);
+  // });
+
   res.render("tasks", {
-    userData: userData
+    userData: userData,
   })
 })
 
@@ -104,7 +111,6 @@ app.post('/edit', function(req, res) {
   if (req.body.deadline !== 'Invalid Date') {
     var deadline = req.body.deadline;
     pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
-    res.sendStatus(200);
   }
   res.sendStatus(200);
 })
