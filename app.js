@@ -53,8 +53,6 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
     };
     userData.push(thisProject);
   }
-  // console.log("\nCurrent User data\n");
-  // console.log(userData);
   res.render("tasks", {
     userData: userData
   })
@@ -100,8 +98,6 @@ app.post("/setProjectDeadline", function(req, res) {
 app.post('/edit', function(req, res) {
   var deadline = req.body.deadline;
   var isoDeadline = deadline.toISOString;
-  // console.log(isoDeadline);
-  // console.log(req.body);
   console.log("editing task");
   const userId = req.user.id;
   pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.task, req.body.id]);
@@ -145,12 +141,6 @@ app.post('/addNewList', function(req, res) {
 
 
 
-// Logout and END Session
-app.get('/logout', (req, res) => {
-  req.logOut();
-  res.redirect('/')
-})
-
 // Login page
 app.get("/login", checkAuthenticated, function(req, res) {
   res.render('login')
@@ -174,7 +164,9 @@ app.post("/register", async function(req, res) {
     password2
   } = req.body;
   let errors = []
+  // Search the user by email
   var user = await pool.query("SELECT * FROM users WHERE email=$1 ", [email])
+  // Check if entered password match in both fields during registration
   if (password1 !== password2) {
     errors.push({
       message: "Passwords must match"
@@ -183,18 +175,21 @@ app.post("/register", async function(req, res) {
       errors
     })
   }
+  // If no such User - encrypt the password and Create new User
   if (user.rowCount === 0) {
     bcrypt.genSalt(saltRounds, function(err, salt) {
       bcrypt.hash(password1, saltRounds, function(err, hash) {
         pool.query("INSERT INTO users (email, password) VALUES ($1, $2)", [email, hash]);
       })
     })
+    // Redirect to login page
     errors.push({
       message: "Now you can login using your credentials"
     })
     res.render('login', {
       errors
     })
+    // If user exists show message
   } else {
     errors.push({
       message: "This email is already registered"
@@ -205,6 +200,11 @@ app.post("/register", async function(req, res) {
   }
 })
 
+// Logout and END Session
+app.get('/logout', (req, res) => {
+  req.logOut();
+  res.redirect('/')
+})
 
 
 
