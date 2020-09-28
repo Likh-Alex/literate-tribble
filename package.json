@@ -13,6 +13,7 @@
   "author": "Likhachov Alex",
   "license": "ISC",
   "dependencies": {
+    "@popperjs/core": "^2.5.2",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
@@ -21,12 +22,14 @@
     "express-flash": "0.0.2",
     "express-session": "^1.17.1",
     "fs-extra": "^9.0.1",
+    "http": "0.0.1-security",
     "jquery": "^3.5.1",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.3.3",
     "pg-pool": "^3.2.1",
-    "selenium-webdriver": "^4.0.0-alpha.7"
+    "selenium-webdriver": "^4.0.0-alpha.7",
+    "socket.io": "^2.3.0"
   }
 }

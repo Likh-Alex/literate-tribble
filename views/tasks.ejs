@@ -8,7 +8,7 @@
 </div>
 <%if(userData !== null){%>
 <%userData.forEach(function(project, i){%>
-<div class="project">
+<div class="project" id='project <%=project.id%>'>
   <div class="projectHeader">
     <div class="projectTitle">
       <span>
@@ -17,10 +17,10 @@
         </a>
       </span>
       <%if(project.deadline == null){%>
-      <h5 value="" class="projectName"><%=project.name%></h5>
+      <h5 id="projectTitle <%=project.id%>" class="projectName"><%=project.name%></h5>
       <%}else{%>
       <% var deadline = project.deadline.toDateString()%>
-      <h5 data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;" class="projectName">
+      <h5 id="projectTitle <%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;" class="projectName">
         <%=project.name%>
       </h5>
       <%}%>
@@ -54,28 +54,28 @@
 <div class="taskList">
   <% userData[i].tasks.forEach(function(task){%>
   <%if(task.t_deadline === null || task.completed === true ){%>
-  <div class="taskRow">
+  <div class="taskRow" id="taskRow <%=task.id%>">
     <%}else{%>
     <% var taskDeadline = task.t_deadline.toDateString();%>
-    <div class="taskRow" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
+    <div class="taskRow" id="taskRow <%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
       <%}%>
     <div class="doneMark">
       <span data-toggle="tooltip" data-placement="bottom" title="Mark as Done">
         <% if(task.completed===true){%>
-      <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark" checked>
+      <input id="doneMark <%= task.id%>" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark" checked>
       <%}else{%>
-      <input id="doneMark" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark">
+      <input id="doneMark <%= task.id%>" type="checkbox" data-id="<%= task.id%>" data-completion="<%= task.completed%>" name="doneTaskMark">
       <%}%>
         </span>
       </div>
       <div class="separator"></div>
       <!-- Task description -->
         <% if(task.completed===true){ %>
-      <div class="taskDescription thick">
-        <span><%= task.name%></span>
+      <div class="taskDescription <%= task.id%> thick">
+        <span id="task<%= task.id%>"><%= task.name%></span>
       </div>
       <%} else {%>
-      <div class="taskDescription">
+      <div class="taskDescription <%= task.id%>">
         <% if(task.priority == 4){%>
         <span style="margin-right: 5px" data-toggle="tooltip" data-placement="bottom" title="Urgent">
           <img width="20" src="images/priority4.png" alt="P4">
@@ -93,7 +93,7 @@
           <img width="20" src="images/priority1.png" alt="P1">
         </span>
         <%}%>
-          <span><%= task.name%></span>
+          <span id="task<%= task.id%>"><%= task.name%></span>
       </div>
       <%}%>
       <!-- Task options -->

@@ -15,8 +15,8 @@ initializePassport(passport);
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const fs = require('fs-extra')
-
 const app = express();
+
 app.use(express.static("public"))
 app.set('view engine', 'ejs')
 app.use(session({
@@ -32,6 +32,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+
+
 //Render Home page
 app.get("/", checkAuthenticated, function(req, res) {
   res.render("home")
@@ -42,7 +44,7 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
   // Query for all projects and tasks for this User
   const userProjects = await pool.query(`SELECT * FROM projects WHERE projects.user_id = ${userId} ORDER BY projects.id ASC`);
   const userData = [];
-  // Run through the projects and query it's tasks
+  // Iterate through the projects and query it's tasks
   for (let i = 0; i < userProjects.rows.length; i++) {
     const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =${userProjects.rows[i].id} `);
     const thisProject = {
@@ -52,16 +54,10 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
       deadline: userProjects.rows[i].p_deadline
     };
     userData.push(thisProject);
-  }
-  const file = "public/js/userData.js"
-
-  // fs.outputJson(file, userData, function (err) {
-  //   if (err) throw err;
-  //   console.log('Saved user Data to '+file);
-  // });
+  };
 
   res.render("tasks", {
-    userData: userData,
+    userData: userData
   })
 })
 
@@ -85,11 +81,11 @@ app.get('/deleteProject/:id', function(req, res) {
 })
 
 // Add New task
-app.post("/submitTask", function(req, res) {
-  console.log(req.body);
+app.post("/submitTask",  function(req, res) {
+  const task = req.body
+  console.log(task);
   console.log("adding new task");
-  const userId = req.user.id;
-  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
+  pool.query  ("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
   res.sendStatus(200);
 })
 

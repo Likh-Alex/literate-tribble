@@ -29,27 +29,14 @@ $(document).on("click", "#setListDeadline", function() {
   })
 })
 
-$(".project").on('click', function() {
-  url = '/tasks'
-  $.get({
-    url: url,
-    type: "GET",
-    success: function() {
-      console.log("Sending request");
-    },
-    error: function(err) {
-      console.log(err);
-    }
-  })
-})
-
 //Edit existing task by ID
 $(document).on("click", '#editTask', function() {
   $("#editTaskDescription").val($(this).attr('data-description'));
   $("#editTaskId").val($(this).attr("data-id"));
   var id = $(this).attr("data-id");
   var url = '/edit';
-  $(".confirmEditTask").on("click", function() {
+  $(".confirmEditTask").on("click", function(event) {
+    event.preventDefault()
     var newTask = $("#editTaskDescription").val();
     // alert(newTask)
     var deadline = new Date($("#deadLineEntry").val())
@@ -64,7 +51,7 @@ $(document).on("click", '#editTask', function() {
       success: function(result) {
         $("#editTaskModal").modal('hide')
         console.log("editing task");
-        window.location.href = '/tasks'
+        document.getElementById('task' + id).innerText = newTask
       },
       error: function(err) {
         console.log(err);
@@ -80,7 +67,8 @@ $(document).on("click", "#editProjectName", function() {
   $("#editProjectNameInput").val($(this).attr('data-name'))
   // alert(id)
   var url = '/editProjectName';
-  $('#confirmEditProjectName').on('click', function() {
+  $('#confirmEditProjectName').on('click', function(event) {
+    event.preventDefault();
     var newTitle = $("#editProjectNameInput").val();
     if (newTitle.length > 1 && newTitle.length <= 15) {
       $.ajax({
@@ -93,7 +81,7 @@ $(document).on("click", "#editProjectName", function() {
         success: function(result) {
           $("#editProjectTitleModal").modal('hide')
           console.log("editing project name");
-          window.location.href = '/tasks'
+          document.getElementById('projectTitle ' + id).innerText = newTitle;
         },
         error: function(err) {
           console.log(err);
@@ -116,8 +104,9 @@ $(document).on('click', "#deleteProject", function() {
         success: function() {
           $("#deleteProjectModal").modal('hide');
           console.log("deleting project");
-          window.location.href = '/'
+          document.getElementById('project '+id).remove();
         },
+
         error: function(err) {
           console.log(err);
         }
@@ -133,6 +122,7 @@ $(document).on("click", "#addButton", function(event) {
   var id = $(this).attr("data-id");
   var newTask = $("#inputNewTask" + id).val()
   var url = '/submitTask';
+  $("#inputNewTask" + id).val('')
   if (newTask !== '' && newTask.length >= 3) {
     event.preventDefault()
     $.ajax({
@@ -180,7 +170,12 @@ $(document).ready(function() {
         },
         success: function(results) {
           console.log("Marking done/undone");
-          window.location.href = "/tasks"
+          if(taskCompletion == true){
+            $('.taskDescription '+id).addClass('thick');
+            $('.taskDescription '+id).prop("checked") = true
+          }else{
+            $('.taskDescription '+id).removeClass('thick');
+          }
         },
         error: function(err) {
           console.log(err);
@@ -196,8 +191,7 @@ $(document).ready(function() {
   $(".setTaskPriority").on("click", function() {
     var id = $(this).attr("data-id");
     $("#setPriorityModal").on('show.bs.modal', function(event) {
-      var url = '/editPriority/' + id;
-
+      var url = '/editPriority/' + id
       $(".choose").on('click', function() {
         var newPriority = $(this).val();
         // alert(newPriority)
@@ -211,7 +205,8 @@ $(document).ready(function() {
             success: function(result) {
               $("#setPriorityModal").modal('hide')
               console.log("Setting priority");
-              window.location.href = '/tasks'
+              document.getElementById
+
             },
             error: function(err) {
               console.log(err);
@@ -240,7 +235,7 @@ $(document).ready(function() {
             console.log(result);
             $("#deleteTaskModal").modal('hide');
             console.log("deleting task");
-            // window.location.href = '/'
+            document.getElementById('taskRow ' + id).remove();
           },
           error: function(err) {
             console.log(err);
@@ -284,5 +279,3 @@ $('#addNewProjectBtn').on("click", function() {
 $(function() {
   $('[data-toggle="tooltip"]').tooltip()
 })
-
-$("#result").load("ajax/test.html");
