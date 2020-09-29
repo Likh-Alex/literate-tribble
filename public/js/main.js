@@ -1,10 +1,13 @@
+
+
 // Set Deadline for Project
 $(document).on("click", "#setListDeadline", function() {
   var today = new Date()
   // alert(today)
   url = '/setProjectDeadline'
-  id = $(this).attr('data-id')
-  $("#confirmEditDeadline").on("click", function() {
+  var projectId = $(this).attr('data-id')
+  $("#confirmEditDeadline").on("click", function(event) {
+    event.preventDefault();
     var deadline = new Date($("#deadLineInput").val())
     if (deadline > today) {
       $.ajax({
@@ -12,12 +15,12 @@ $(document).on("click", "#setListDeadline", function() {
         url: url,
         data: {
           projectDeadline: deadline.toISOString(),
-          projectID: id
+          projectID: projectId
         },
         success: function(result) {
           $("#editDeadLineModal").modal('hide')
           console.log("setting project Deadline");
-          window.location.href = '/tasks'
+          document.getElementById('projectTitle ' + id).attributes[6].value = "Deadline " + deadline.toDateString()
         },
         error: function(err) {
           console.log(err);
@@ -33,7 +36,7 @@ $(document).on("click", "#setListDeadline", function() {
 $(document).on("click", '#editTask', function() {
   $("#editTaskDescription").val($(this).attr('data-description'));
   $("#editTaskId").val($(this).attr("data-id"));
-  var id = $(this).attr("data-id");
+  var editTaskId = $(this).attr("data-id");
   var url = '/edit';
   $(".confirmEditTask").on("click", function(event) {
     event.preventDefault()
@@ -46,12 +49,16 @@ $(document).on("click", '#editTask', function() {
       data: {
         task: newTask,
         deadline: deadline.toLocaleString(),
-        id: id
+        id: editTaskId
       },
       success: function(result) {
         $("#editTaskModal").modal('hide')
         console.log("editing task");
-        document.getElementById('task' + id).innerText = newTask
+        document.getElementById('task' + editTaskId).innerText = newTask
+        if (deadline != null) {
+          document.getElementById('taskRow ' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
+        }
+
       },
       error: function(err) {
         console.log(err);
@@ -62,40 +69,52 @@ $(document).on("click", '#editTask', function() {
 
 
 // Edit Project Title by ID
-$(document).on("click", "#editProjectName", function() {
-  var id = $(this).attr('data-id');
-  $("#editProjectNameInput").val($(this).attr('data-name'))
+$(document).on('click', "#editProjectName", function() {
+  // $("#editProjectName").click(function() {
+  var editProjectId = $(this).attr('data-id');
   // alert(id)
+  var currentTitle = document.getElementById('projectTitle ' + editProjectId).innerText;
+  // alert(currentTitle)
+  $("#editProjectNameInput").val(currentTitle)
   var url = '/editProjectName';
   $('#confirmEditProjectName').on('click', function(event) {
-    event.preventDefault();
     var newTitle = $("#editProjectNameInput").val();
-    if (newTitle.length > 1 && newTitle.length <= 15) {
-      $.ajax({
-        type: "POST",
-        url: url,
-        data: {
-          projectName: newTitle,
-          projectID: id
-        },
-        success: function(result) {
-          $("#editProjectTitleModal").modal('hide')
-          console.log("editing project name");
-          document.getElementById('projectTitle ' + id).innerText = newTitle;
-        },
-        error: function(err) {
-          console.log(err);
-        }
-      })
+    if (currentTitle === newTitle) {
+      event.preventDefault();
+      alert("New Title should be different")
+    } else {
+      event.preventDefault();
+      if (newTitle.length > 1 && newTitle.length <= 25) {
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: {
+            projectName: newTitle,
+            projectID: editProjectId
+          },
+          success: function(result) {
+            $("#editProjectTitleModal").modal('hide')
+            // $("#editProjectNameInput").val('')
+            // alert("editing project name");
+            document.getElementById('projectTitle ' + editProjectId).innerText = newTitle;
+            editProjectId = null;
+            currentTitle = null;
+            newTitle = null
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        })
+      }
     }
   })
 })
 
 // Delete Project by ID
 $(document).on('click', "#deleteProject", function() {
-  var id = $(this).attr('data-id');
+  var deleteProjectId = $(this).attr('data-id');
   // alert(id)
-  var url = '/deleteProject/' + id;
+  var url = '/deleteProject/' + deleteProjectId;
   $("#deleteProjectModal").on('show.bs.modal', function() {
     $("#confirmDeleteProject").on("click", function() {
       $.ajax({
@@ -104,7 +123,7 @@ $(document).on('click', "#deleteProject", function() {
         success: function() {
           $("#deleteProjectModal").modal('hide');
           console.log("deleting project");
-          document.getElementById('project '+id).remove();
+          document.getElementById('project ' + deleteProjectId).remove();
         },
 
         error: function(err) {
@@ -119,10 +138,11 @@ $(document).on('click', "#deleteProject", function() {
 
 //Add new task
 $(document).on("click", "#addButton", function(event) {
-  var id = $(this).attr("data-id");
-  var newTask = $("#inputNewTask" + id).val()
+  var thisProjectId = $(this).attr("data-id");
+  var newTask = $("#inputNewTask" + thisProjectId).val()
   var url = '/submitTask';
-  $("#inputNewTask" + id).val('')
+  alert(newTask)
+  $("#inputNewTask" + thisProjectId).val('')
   if (newTask !== '' && newTask.length >= 3) {
     event.preventDefault()
     $.ajax({
@@ -130,14 +150,10 @@ $(document).on("click", "#addButton", function(event) {
       type: "POST",
       data: {
         name: newTask,
-        id: id
+        id: thisProjectId
       },
       success: function(results) {
         console.log("adding new task");
-        $("#addButton").mouseup(function() {
-          $("#inputNewTask" + id).val(null)
-        })
-        // window.location.href = "/"
       },
       error: function(err) {
         console.log(err);
@@ -148,14 +164,18 @@ $(document).on("click", "#addButton", function(event) {
 
 
 // Mark task as DONE/UNDONE
-$(document).ready(function() {
+$(document).on(function() {
   $('input[type="checkbox"]').click(function() {
     var taskCompletion = true;
     var taskStatus = "Completed"
-    var id = $(this).attr("data-id")
-    var url = '/markdone/' + id;
+    var markTaskId = $(this).attr("data-id")
+    var priority = $(this).attr("data-priority")
+    var url = '/markdone/' + markTaskId;
     if ($(this).prop("checked") == true) {
       taskCompletion = true
+      $('#taskRow ' + markTaskId).tooltip({
+        disabled: true
+      })
     } else if ($(this).prop("checked") == false) {
       taskCompletion = false
       taskStatus = "In progress"
@@ -170,11 +190,24 @@ $(document).ready(function() {
         },
         success: function(results) {
           console.log("Marking done/undone");
-          if(taskCompletion == true){
-            $('.taskDescription '+id).addClass('thick');
-            $('.taskDescription '+id).prop("checked") = true
-          }else{
-            $('.taskDescription '+id).removeClass('thick');
+          var imageSpan = document.getElementById('imgSpan' + markTaskId)
+          var parent = document.getElementById('taskDescription ' + markTaskId)
+
+
+          if (taskCompletion === true) {
+            if (imageSpan !== null) {
+              imageSpan.style.display = "none";
+              parent.classList.add('thick')
+            } else {
+              parent.classList.add('thick')
+            }
+          } else {
+            if (imageSpan !== null) {
+              imageSpan.style.display = "inline-block";
+              parent.classList.remove('thick')
+            } else {
+              parent.classList.remove('thick')
+            }
           }
         },
         error: function(err) {
@@ -187,31 +220,42 @@ $(document).ready(function() {
 
 
 // Set priority for Task
-$(document).ready(function() {
-  $(".setTaskPriority").on("click", function() {
-    var id = $(this).attr("data-id");
-    $("#setPriorityModal").on('show.bs.modal', function(event) {
-      var url = '/editPriority/' + id
-      $(".choose").on('click', function() {
-        var newPriority = $(this).val();
-        // alert(newPriority)
-        $(".confirmEditPriority").on("click", function() {
-          $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-              param: newPriority
-            },
-            success: function(result) {
-              $("#setPriorityModal").modal('hide')
-              console.log("Setting priority");
-              document.getElementById
-
-            },
-            error: function(err) {
-              console.log(err);
+$(document).on('click', ".setTaskPriority", function() {
+  const priorityTaskId = $(this).attr("data-id");
+  alert(priorityTaskId)
+  console.log(priorityTaskId);
+  $("#setPriorityModal").on('show.bs.modal', function(event) {
+    var url = '/editPriority'
+    $(".choose").on('click', function() {
+      var newPriority = $(this).val();
+      // alert(newPriority)
+      $(".confirmEditPriority").on("click", function() {
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: {
+            priority: newPriority,
+            id: priorityTaskId
+          },
+          success: function(result) {
+            $("#setPriorityModal").modal('hide')
+            console.log("Setting priority for " + priorityTaskId);
+            var oldImg = document.getElementById("imgSpan" + priorityTaskId)
+            if (oldImg) {
+              oldImg.remove();
             }
-          })
+            console.log(priorityTaskId);
+            var img = document.createElement('IMG');
+            var attributes = 'id="imgSpan' + priorityTaskId + '" class="imgSpan" data-toggle="tooltip" data-placement="bottom" title="Urgent" src="images/priority' + newPriority + '.png" alt="Img"';
+            var arr = attributes.match(/[^\s="']+|"([^"]*)"|'([^']*)'/g);
+            for (var i = 0; i < arr.length; i += 2)
+              img.setAttribute(arr[i], arr[i + 1].replace(/"/g, ''));
+
+            document.getElementById("taskDescription " + priorityTaskId).prepend(img);
+          },
+          error: function(err) {
+            console.log(err);
+          }
         })
       })
     })
@@ -220,12 +264,17 @@ $(document).ready(function() {
 
 
 
+
+
+
+
 //Delete Task by ID
-$(document).ready(function() {
+$(document).on(function() {
   $(".deleteTask").on("click", function() {
-    var id = $(this).attr("data-id");
+    var delTaskId = $(this).attr("data-id");
+    console.log(delTaskId);
     $("#deleteTaskModal").on('show.bs.modal', function(event) {
-      var url = '/delete/' + id;
+      var url = '/delete/' + delTaskId;
       // alert(id);
       $(document).on("click", ".confirmDeleteTask", function() {
         $.ajax({
@@ -235,7 +284,7 @@ $(document).ready(function() {
             console.log(result);
             $("#deleteTaskModal").modal('hide');
             console.log("deleting task");
-            document.getElementById('taskRow ' + id).remove();
+            document.getElementById('taskRow ' + delTaskId).remove();
           },
           error: function(err) {
             console.log(err);

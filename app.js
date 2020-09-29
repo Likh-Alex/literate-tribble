@@ -114,15 +114,17 @@ app.post('/edit', function(req, res) {
 // Edit Project name by ID
 app.post("/editProjectName", function(req, res) {
   console.log("Editing Project Name");
-  pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, req.body.projectID]);
+  // console.log(req.body);
+  var projectId = Number(req.body.projectID)
+  pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, projectId]);
   res.sendStatus(200);
 })
 
 //Edit priority by Task ID
-app.post('/editPriority/:id', function(req, res) {
+app.post('/editPriority', async function(req, res) {
   console.log("Editing priority");
   const userId = req.user.id;
-  pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.param, req.params.id]);
+  await pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
   res.sendStatus(200);
 })
 
