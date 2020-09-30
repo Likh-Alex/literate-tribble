@@ -7,59 +7,69 @@
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </div>
 <%if(userData !== null){%>
+
 <%userData.forEach(function(project, i){%>
-<div class="project" id='project <%=project.id%>'>
+<div class="project" id='project<%=project.id%>'>
   <div class="projectHeader">
     <div class="projectTitle">
       <span>
-        <a data-toggle="modal" data-target="#editDeadLineModal">
+        <a data-toggle="modal" data-target="#editDeadLineModal<%=project.id%>">
           <i id="setListDeadline" data-id="<%=project.id%>" class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
         </a>
       </span>
       <%if(project.deadline == null){%>
-      <h5 id="projectTitle <%=project.id%>" class="projectName">
+      <h5 id="projectTitle<%=project.id%>" class="projectName">
         <%=project.name%>
       </h5>
       <%}else{%>
       <% var deadline = project.deadline.toDateString()%>
-      <h5 id="projectTitle <%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;" class="projectName">
+      <h5 id="projectTitle<%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;" class="projectName">
         <%=project.name%>
       </h5>
       <%}%>
       <div class="projectButtons">
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
-          <a data-toggle="modal" data-target="#editProjectTitleModal">
-            <i id="editProjectName" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
+          <a data-toggle="modal" data-target="#editProjectTitleModal<%=project.id%>">
+            <i id="editProjectName<%=project.id%>" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
       </a>
       </span>
+
       <i class="separatorDash fas fa-minus"></i>
+
       <span data-toggle="tooltip" data-placement="top" title="Delete Project">
-        <a data-toggle="modal" data-target="#deleteProjectModal">
-          <i id="deleteProject" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>
+        <a data-toggle="modal" data-target="#deleteProjectModal<%=project.id%>">
+          <i id="deleteProject<%=project.id%>" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>
         </a>
       </span>
     </div>
   </div>
 </div>
+
+
+
+
 <!-- New task Input Tab -->
 <form class="" action="" method="">
   <div class="inputTab">
     <div class="plusButton fas fa-plus"></div>
     <input id="inputNewTask<%=project.id%>" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" name="taskDescription" value=""
       type="text" placeholder="  Start typing here to create a task..." required>
-    <button id="addButton <%=project.id %>" data-id="<%=project.id %>" class="addButton" type="submit" value="Submit">
+    <button id="addButton<%=project.id %>" data-id="<%=project.id %>" class="addButton" type="submit" value="Submit">
       <p>Add task</p>
     </button>
   </div>
 </form>
+
+
+
 <!-- Current tasks in the ToDoList -->
 <div class="taskList">
   <% userData[i].tasks.forEach(function(task){%>
   <%if(task.t_deadline === null || task.completed === true ){%>
-  <div class="taskRow" id="taskRow <%=task.id%>">
+  <div class="taskRow" id="taskRow<%=task.id%>">
     <%}else{%>
     <% var taskDeadline = task.t_deadline.toDateString();%>
-    <div class="taskRow" id="taskRow <%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
+    <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
       <%}%>
     <div class="doneMark">
       <span >
@@ -74,20 +84,20 @@
 
       <!-- Task description -->
         <% if(task.completed===true){ %>
-      <div class="taskDescription <%= task.id%> thick" id="taskDescription <%= task.id%>">
+      <div class="taskDescription <%= task.id%> thick" id="taskDescription<%= task.id%>">
         <span id="task<%= task.id%>"> <%= task.name%> </span>
       </div>
 
       <%} else {%>
-      <div class="taskDescription <%= task.id%>" id="taskDescription <%= task.id%>">
+      <div class="taskDescription <%= task.id%>" id="taskDescription<%= task.id%>">
         <% if(task.priority == 4){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan" data-toggle="tooltip" data-placement="bottom" title="Urgent" src="images/priority4.png" alt="P4">
+        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority4.png" alt="Img">
         <%}else if(task.priority == 3){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan" data-toggle="tooltip" data-placement="bottom" title="High" src="images/priority3.png" alt="P3">
+        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority3.png" alt="Img">
         <%}else if(task.priority == 2){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan" data-toggle="tooltip" data-placement="bottom" title="Normal" src="images/priority2.png" alt="P2">
+        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority2.png" alt="Img">
         <%}else if(task.priority == 1){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan" data-toggle="tooltip" data-placement="bottom" title="Low" src="images/priority1.png" alt="P1">
+        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority1.png" alt="Img">
         <%}%>
           <span id="task<%= task.id%>">
         <%= task.name%>
@@ -100,27 +110,202 @@
       <!-- Task options -->
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
-          <a data-toggle="modal" data-target="#setPriorityModal">
-            <i class="setTaskPriority fas fa-sort" id="edit <%= task.id%>" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
+          <a data-toggle="modal" data-target="#setPriorityModal<%= task.id%>">
+          <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
           </a>
-        </span>
+      </span>
+
       <i class="separatorDash fas fa-minus"></i>
+
       <span data-toggle="tooltip" data-placement="bottom" title="Edit task">
-        <a data-toggle="modal" data-target="#editTaskModal">
+        <a data-toggle="modal" data-target="#editTaskModal<%= task.id%>">
           <i id="editTask <%= task.id%>" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
         </a>
       </span>
+
       <i class="separatorDash fas fa-minus"></i>
+
       <span data-toggle="tooltip" data-placement="bottom" title="Delete task">
-        <a data-toggle="modal" data-target="#deleteTaskModal">
+        <a data-toggle="modal" data-target="#deleteTaskModal<%= task.id%>">
           <i class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
         </a>
       </span>
     </div>
   </div>
+
+
+
+
+
+
+
+
+
+
+  <!-- TASK MODALS SECTION  -->
+
+  <!--Edit Task Priority Modal -->
+  <div class="modal fade" id="setPriorityModal<%= task.id%>" tabindex="-1" aria-labelledby="setPriorityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- <form id="editPriorityForm" class="" action="" method=""> -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Set Priority</h5>
+          </div>
+          <div class="modal-body">
+            <button type="button" value="4" class="choose btn btn-danger btn-block">Urgent</button>
+            <button type="button" value="3" class="choose btn btn-warning btn-block">High</button>
+            <button type="button" value="2" class="choose btn btn-primary btn-block">Normal</button>
+            <button type="button" value="1" class="choose btn btn-secondary btn-block">Low </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="confirmEditPriority<%=task.id%>" class="confirmEditPriority btn btn-primary">Set Priority</button>
+          </div>
+        <!-- </form> -->
+      </div>
+    </div>
+  </div>
+
+
+  <!--Edit Task Modal -->
+  <div class="modal fade" id="editTaskModal<%=task.id%>" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="" action="" method="">
+          <input type="hidden" id="editTaskId<%=task.id%>" name="id" value="" />
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
+          </div>
+          <div class="modal-body">
+            <div class="input-group">
+              <input autocomplete="off" id="editTaskDescription<%=task.id%>" pattern="[A-Za-z0-9 ].{3,25} name=" taskDescription" class="form-control" required>
+            </div>
+            <div class="input-group">
+              <input data-toggle="tooltip" data-placement="bottom" title="Must be later than today" id="deadLineEntry<%=task.id%>" type="date" name="" value="" class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="confirmEditTask<%=task.id%>" class="confirmEditTask btn btn-primary">Edit Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!--Delete Task Modal -->
+  <div class="modal fade" id="deleteTaskModal<%=task.id%>" tabindex="-1" aria-labelledby="exampleformModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="" action="" method="">
+          <div class="modal-header">
+          </div>
+          <div class="modal-body">
+            <h3>Do you want to delete this task?</h3>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" id="confirmDeleteTask<%=task.id%>" class="confirmDeleteTask btn btn-danger ">Delete Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
   <%})%>
-  <%- include('partials/modals') %>
-  <%})%>
-  <%- include('partials/footer') %>
-  <%}%>
-<%- include('partials/modals') %>
+
+
+  <!-- PROJECT MODALS SECTION  -->
+  <!--Edit Project Title Modal -->
+  <div class="modal fade" id="editProjectTitleModal<%=project.id%>" tabindex="-1" aria-labelledby="exampleformModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="" action="" method="">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Title</h5>
+          </div>
+          <div class="modal-body">
+            <div class="input-group">
+              <input id="editProjectNameInput<%=project.id%>" autocomplete="off" pattern="[a-zA-Z0-9 ].{1,25}" title="1 to 25 characters" class="form-control" aria-label="With textarea" placeholder="Enter new title" required></input>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" id="confirmEditProjectName<%=project.id%>" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Delete Project Modal -->
+<div class="modal fade" id="deleteProjectModal<%=project.id%>" tabindex="-1" aria-labelledby="deleteProjectModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="" action="index.html" method="post">
+        <div class="modal-body">
+          <h3>Do you want to delete this project?</h3>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" id="confirmDeleteProject<%=project.id%>" class="btn btn-primary">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--Enter Dead Line Modal -->
+<div class="modal fade" id="editDeadLineModal<%=project.id%>" tabindex="-1" aria-labelledby="exampleformModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form class="" action="" method="">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Enter Deadline</h5>
+        </div>
+        <div class="modal-body">
+          <input id="deadLineInput<%=project.id%>" type="date" name="" value="" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="confirmEditDeadline<%=project.id%>" type="button" class="btn btn-primary">Edit Deadline</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--Add NEW list Modal -->
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-labelledby="exampleformModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="" action="/tasks" method="">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New TODO list</h5>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <input type="text" autocomplete="off" autofocus pattern="[A-Za-z0-9 ]{3,25}" title="3 to 15 characters" class="newListNameInput form-control" placeholder="List name" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="confirmNewList btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+<%})%>
+
+<%- include('partials/footer') %>
+
+<%}%>

@@ -114,17 +114,20 @@ app.post('/edit', function(req, res) {
 // Edit Project name by ID
 app.post("/editProjectName", function(req, res) {
   console.log("Editing Project Name");
-  // console.log(req.body);
+  // var attempt = 1
+  console.log(req.body);
+  // console.log(attempt);
   var projectId = Number(req.body.projectID)
   pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, projectId]);
   res.sendStatus(200);
+  // attempt +=1;
 })
 
 //Edit priority by Task ID
-app.post('/editPriority', async function(req, res) {
-  console.log("Editing priority");
+app.post('/editPriority', function(req, res) {
+  console.log("Editing priority for task ID " + req.body.id + ' with priority '+req.body.priority);
   const userId = req.user.id;
-  await pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
+  pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
   res.sendStatus(200);
 })
 
