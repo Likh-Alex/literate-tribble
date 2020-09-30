@@ -132,13 +132,13 @@ $(".deleteProject").click(function() {
 
 
 //Add new task
-$(document).on("click", "#addButton", function(event) {
+$(".addButton").click(function() {
+  alert('hi')
   var thisProjectId = $(this).attr("data-id");
   var newTask = $("#inputNewTask" + thisProjectId).val()
   var url = '/submitTask';
   event.preventDefault()
   alert(newTask)
-  $("#inputNewTask" + thisProjectId).val('')
   if (newTask !== '' && newTask.length >= 3) {
     $.ajax({
       url: url,
@@ -148,7 +148,8 @@ $(document).on("click", "#addButton", function(event) {
         id: thisProjectId
       },
       success: function(results) {
-        console.log("adding new task");
+        alert("New task added");
+        $("#inputNewTask" + thisProjectId).val('')
       },
       error: function(err) {
         console.log(err);
@@ -253,21 +254,22 @@ $(".setTaskPriority").click( function(){
 
 //Delete Task by ID
   $(".deleteTask").click(function() {
-    alert('hi')
+    alert('I am inside')
     var delTaskId = $(this).attr("data-id");
-    console.log(delTaskId);
-    $("#deleteTaskModal").on('show.bs.modal', function(event) {
-      var url = '/delete/' + delTaskId;
-      // alert(id);
-      $(document).on("click", ".confirmDeleteTask", function() {
-        $.ajax({
+    // alert(delTaskId);
+    $("#deleteTaskModal"+delTaskId).on('show.bs.modal', function() {
+      var url = '/deletetask'
+      alert(delTaskId);
+      $("#confirmDeleteTask"+delTaskId).click(function(event) {
+        event.preventDefault();
+        $.post({
           url: url,
-          type: "GET",
+          data:{
+            id: delTaskId
+          },
           success: function(result) {
-            console.log(result);
-            $("#deleteTaskModal").modal('hide');
-            console.log("deleting task");
-            document.getElementById('taskRow ' + delTaskId).remove();
+            $("#deleteTaskModal"+delTaskId).modal('hide');
+            document.getElementById('taskRow' + delTaskId).remove();
           },
           error: function(err) {
             console.log(err);

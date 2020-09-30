@@ -63,10 +63,9 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
 
 
 // Delete task by id
-app.get('/delete/:id', function(req, res) {
-  console.log("Deleting task");
-  const userId = req.user.id;
-  pool.query("DELETE FROM tasks WHERE id = ($1)", [req.params.id]);
+app.post('/deletetask', function(req, res) {
+  pool.query("DELETE FROM tasks WHERE id = ($1)", [req.body.id]);
+  console.log("Deleting task with ID " + req.body.id);
   res.sendStatus(200);
 })
 
@@ -81,11 +80,11 @@ app.get('/deleteProject/:id', function(req, res) {
 })
 
 // Add New task
-app.post("/submitTask",  function(req, res) {
+app.post("/submitTask", function(req, res) {
   const task = req.body
   console.log(task);
   console.log("adding new task");
-  pool.query  ("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
+  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
   res.sendStatus(200);
 })
 
@@ -125,7 +124,7 @@ app.post("/editProjectName", function(req, res) {
 
 //Edit priority by Task ID
 app.post('/editPriority', function(req, res) {
-  console.log("Editing priority for task ID " + req.body.id + ' with priority '+req.body.priority);
+  console.log("Editing priority for task ID " + req.body.id + ' with priority ' + req.body.priority);
   const userId = req.user.id;
   pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
   res.sendStatus(200);
