@@ -14,23 +14,23 @@
     <div class="projectTitle">
       <span>
         <a data-toggle="modal" data-target="#editDeadLineModal<%=project.id%>">
-          <i id="setListDeadline" data-id="<%=project.id%>" class="far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
+          <i data-id="<%=project.id%>" class="projectDeadline far fa-calendar-alt fa-2x" data-toggle="tooltip" data-placement="top" title="Set Deadline"></i>
         </a>
       </span>
       <%if(project.deadline == null){%>
-      <h5 id="projectTitle<%=project.id%>" class="projectName">
+      <h5 class="projectName <%=project.id%>">
         <%=project.name%>
       </h5>
       <%}else{%>
       <% var deadline = project.deadline.toDateString()%>
-      <h5 id="projectTitle<%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;" class="projectName">
+      <h5 class="projectName <%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;">
         <%=project.name%>
       </h5>
       <%}%>
       <div class="projectButtons">
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal<%=project.id%>">
-            <i id="editProjectName<%=project.id%>" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
+      <i id="editProjectName<%=project.id%>" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
       </a>
       </span>
 
@@ -52,8 +52,8 @@
 <form class="" action="" method="">
   <div class="inputTab">
     <div class="plusButton fas fa-plus"></div>
-    <input id="inputNewTask<%=project.id%>" data-description="data-description" class="inputField" minlength="3" maxlength="50" pattern="[A-Za-z]{3-50}" title="Please enter 3 to 50 characters" autocomplete="off" name="taskDescription" value=""
-      type="text" placeholder="  Start typing here to create a task..." required>
+    <input id="inputNewTask<%=project.id%>" data-toggle="tooltip" data-placement="top" title="Please enter 1 to 50 characters" data-description="data-description" class="inputField" minlength="1" maxlength="50" pattern="[A-Za-z].{1-50}"
+      autocomplete="off" name="taskDescription" value="" type="text" placeholder="  Start typing here to create a task..." required>
     <button id="addButton <%=project.id %>" data-id="<%=project.id %>" class="addButton" type="submit" value="Submit">
       <p>Add task</p>
     </button>
@@ -66,7 +66,7 @@
 <div class="taskList">
   <% userData[i].tasks.forEach(function(task){%>
   <%if(task.t_deadline === null || task.completed === true ){%>
-  <div class="taskRow" id="taskRow<%=task.id%>">
+  <div class="taskRow" id="taskRow<%=task.id%>" data-toggle=" tooltip" data-placement="bottom" title="">
     <%}else{%>
     <% var taskDeadline = task.t_deadline.toDateString();%>
     <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
@@ -111,8 +111,8 @@
       <div class="taskOptions">
         <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
           <a data-toggle="modal" data-target="#setPriorityModal<%= task.id%>">
-          <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
-          </a>
+      <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
+      </a>
       </span>
 
       <i class="separatorDash fas fa-minus"></i>
@@ -146,23 +146,35 @@
 
   <!--Edit Task Priority Modal -->
   <div class="modal fade" id="setPriorityModal<%= task.id%>" tabindex="-1" aria-labelledby="setPriorityModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-sm">
       <div class="modal-content">
-        <!-- <form id="editPriorityForm" class="" action="" method=""> -->
+        <form class="" action="" method="">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Set Priority</h5>
           </div>
           <div class="modal-body">
-            <button type="button" value="4" class="choose btn btn-danger btn-block">Urgent</button>
-            <button type="button" value="3" class="choose btn btn-warning btn-block">High</button>
-            <button type="button" value="2" class="choose btn btn-primary btn-block">Normal</button>
-            <button type="button" value="1" class="choose btn btn-secondary btn-block">Low </button>
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-danger">
+                <input type="radio" value="4" name="options" class="choose 4" autocomplete="off"> Urgent
+              </label>
+              <label class="btn btn-warning">
+                <input type="radio" value="3" name="options" class="choose 3" autocomplete="off"> High
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" value="2" name="options" class="choose 2" autocomplete="off"> Normal
+              </label>
+              <label class="btn btn-secondary">
+                <input type="radio" value="1" name="options" class="choose 1" autocomplete="off"> Low
+              </label>
+            </div>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="confirmEditPriority<%=task.id%>" class="confirmEditPriority btn btn-primary">Set Priority</button>
+            <button type="submit" id="confirmEditPriority<%=task.id%>" class="confirmEditPriority btn btn-primary">Set Priority</button>
           </div>
-        <!-- </form> -->
+        </form>
       </div>
     </div>
   </div>
@@ -172,7 +184,7 @@
   <div class="modal fade" id="editTaskModal<%=task.id%>" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form class="" action="" method="">
+        <form  class="" action="" method="">
           <input type="hidden" id="editTaskId<%=task.id%>" name="id" value="" />
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
@@ -286,7 +298,7 @@
 <div class="modal fade" id="newProjectModal" tabindex="-1" aria-labelledby="exampleformModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form class="" action="/tasks" method="">
+      <form class="" action="" method="">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">New TODO list</h5>
         </div>
@@ -297,7 +309,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="confirmNewList btn btn-primary">Create</button>
+          <button type="button" class="confirmNewList btn btn-primary">Create</button>
         </div>
       </form>
     </div>

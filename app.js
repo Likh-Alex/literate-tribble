@@ -70,12 +70,11 @@ app.post('/deletetask', function(req, res) {
 })
 
 // Delete Project By ID
-app.get('/deleteProject/:id', function(req, res) {
-  console.log("deleting project");
-  console.log(req.params.id);
-  pool.query(`DELETE FROM tasks WHERE tasks.project_id = $1`, [req.params.id])
+app.post('/deleteProject', async function(req, res) {
+  await pool.query(`DELETE FROM tasks WHERE tasks.project_id = $1`, [req.body.id])
   console.log("Deleted tasks for project");
-  pool.query("DELETE FROM projects WHERE id = $1", [req.params.id])
+  await pool.query("DELETE FROM projects WHERE id = $1", [req.body.id])
+  console.log("Deleted project");
   res.sendStatus(200);
 })
 
@@ -101,13 +100,16 @@ app.post('/edit', function(req, res) {
   var deadline = req.body.deadline;
   var isoDeadline = deadline.toISOString;
   console.log("editing task");
+  console.log(req.body);
   const userId = req.user.id;
   pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.task, req.body.id]);
   if (req.body.deadline !== 'Invalid Date') {
     var deadline = req.body.deadline;
     pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
   }
-  res.sendStatus(200);
+  return res.json({
+    result: req.body
+  })
 })
 
 // Edit Project name by ID
@@ -125,7 +127,7 @@ app.post("/editProjectName", function(req, res) {
 //Edit priority by Task ID
 app.post('/editPriority', function(req, res) {
   console.log("Editing priority for task ID " + req.body.id + ' with priority ' + req.body.priority);
-  const userId = req.user.id;
+  // const userId = req.user.id;
   pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
   res.sendStatus(200);
 })

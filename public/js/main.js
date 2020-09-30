@@ -1,12 +1,12 @@
 // Set Deadline for Project
-
-$("#setListDeadline").on("click", function() {
+$(".projectDeadline").click(function() {
   var today = new Date()
   url = '/setProjectDeadline'
   var projectId = $(this).attr('data-id')
-  $("#confirmEditDeadline").on("click", function(event) {
+  alert(projectId)
+  $("#confirmEditDeadline" + projectId).on("click", function(event) {
     event.preventDefault();
-    var deadline = new Date($("#deadLineInput").val())
+    var deadline = new Date($("#deadLineInput" + projectId).val())
     if (deadline > today) {
       $.ajax({
         type: "POST",
@@ -16,9 +16,9 @@ $("#setListDeadline").on("click", function() {
           projectID: projectId
         },
         success: function(result) {
-          $("#editDeadLineModal").modal('hide')
+          $("#editDeadLineModal" + projectId).modal('hide')
           console.log("setting project Deadline");
-          document.getElementById('projectTitle ' + projectId).attributes[6].value = "Deadline " + deadline.toDateString()
+          document.getElementById('projectTitle' + projectId).attributes[6].value = "Deadline " + deadline.toDateString()
         },
         error: function(err) {
           console.log(err);
@@ -31,52 +31,56 @@ $("#setListDeadline").on("click", function() {
 })
 
 //Edit existing task by ID
-$(document).on("click", '#editTask', function() {
-  $("#editTaskDescription").val($(this).attr('data-description'));
-  $("#editTaskId").val($(this).attr("data-id"));
+$('.editTask').click(function() {
   var editTaskId = $(this).attr("data-id");
+  $("#editTaskId").val($(this).attr("data-id"));
+  $("#editTaskDescription" + editTaskId).val(document.getElementById('task' + editTaskId).innerText);
   var url = '/edit';
-  $(".confirmEditTask").on("click", function(event) {
+  $("#confirmEditTask" + editTaskId).on("click", function(event) {
     event.preventDefault()
-    var newTask = $("#editTaskDescription").val();
+    var newTask = $("#editTaskDescription" + editTaskId).val();
     // alert(newTask)
-    var deadline = new Date($("#deadLineEntry").val())
-    $.ajax({
-      type: "POST",
-      url: url,
-      data: {
-        task: newTask,
-        deadline: deadline.toLocaleString(),
-        id: editTaskId
-      },
-      success: function(result) {
-        $("#editTaskModal").modal('hide')
-        console.log("editing task");
-        document.getElementById('task' + editTaskId).innerText = newTask
-        if (deadline != null) {
-          document.getElementById('taskRow ' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
+    var today = new Date()
+    var deadline = new Date($("#deadLineEntry" + editTaskId).val())
+    // alert(deadline)
+    if (today > deadline) {
+      alert("Deadline must be later than today")
+    } else {
+      $.post({
+        url: url,
+        data: {
+          task: newTask,
+          deadline: deadline.toLocaleString(),
+          id: editTaskId
+        },
+        success: function(result) {
+          $("#editTaskModal" + editTaskId).modal('hide')
+          console.log("editing task");
+          // alert(result.deadline)
+          document.getElementById('task' + editTaskId).innerText = newTask
+          if (result.deadline !== undefined) {
+            document.getElementById('taskRow' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
+          }
+        },
+        error: function(err) {
+          console.log(err);
         }
-
-      },
-      error: function(err) {
-        console.log(err);
-      }
-    })
+      })
+    }
   })
 })
 
 
 // Edit Project Title by ID
-$(document).on('click', ".editProject", function() {
-  // $("#editProjectName").click(function() {
+$(".editProject").click(function() {
   var editProjectId = $(this).attr('data-id');
   // alert(editProjectId)
-  var currentTitle = document.getElementById('projectTitle' + editProjectId).innerText;
+  var currentTitle = document.getElementsByClassName('projectName ' + editProjectId)[0].innerText;
   // alert(currentTitle)
-  $("#editProjectNameInput").val(currentTitle)
+  $("#editProjectNameInput" + editProjectId).val(currentTitle)
   var url = '/editProjectName';
-  $('#confirmEditProjectName').on('click', function(event) {
-    var newTitle = $("#editProjectNameInput").val();
+  $('#confirmEditProjectName' + editProjectId).click(function(event) {
+    var newTitle = $("#editProjectNameInput" + editProjectId).val();
     if (currentTitle === newTitle) {
       event.preventDefault();
       alert("New Title should be different")
@@ -93,7 +97,7 @@ $(document).on('click', ".editProject", function() {
           },
           success: function(result) {
             $("#editProjectTitleModal").modal('hide')
-            document.getElementById('projectTitle' + editProjectId).innerText = newTitle
+            document.getElementsByClassName('projectName ' + editProjectId)[0].innerText = newTitle;
             editProjectId = null;
           },
           error: function(err) {
@@ -108,15 +112,20 @@ $(document).on('click', ".editProject", function() {
 // Delete Project by ID
 $(".deleteProject").click(function() {
   var deleteProjectId = $(this).attr('data-id');
-  // alert(id)
-  var url = '/deleteProject/' + deleteProjectId;
-  $("#deleteProjectModal").on('show.bs.modal', function() {
-    $("#confirmDeleteProject").on("click", function() {
-      $.ajax({
+  // alert(deleteProjectId)
+  var url = '/deleteProject';
+  $("#deleteProjectModal" + deleteProjectId).on('show.bs.modal', function(event) {
+    // alert("i'm modal")
+    $("#confirmDeleteProject" + deleteProjectId).click(function() {
+      // alert("i'm clicked")
+      event.preventDefault();
+      $.post({
         url: url,
-        type: "GET",
+        data: {
+          id: deleteProjectId
+        },
         success: function() {
-          $("#deleteProjectModal").modal('hide');
+          $("#deleteProjectModal" + deleteProjectId).modal('hide');
           console.log("deleting project");
           document.getElementById('project' + deleteProjectId).remove();
         },
@@ -133,12 +142,12 @@ $(".deleteProject").click(function() {
 
 //Add new task
 $(".addButton").click(function() {
-  alert('hi')
+  // alert('hi')
   var thisProjectId = $(this).attr("data-id");
   var newTask = $("#inputNewTask" + thisProjectId).val()
   var url = '/submitTask';
   event.preventDefault()
-  alert(newTask)
+  // alert(newTask)
   if (newTask !== '' && newTask.length >= 3) {
     $.ajax({
       url: url,
@@ -148,7 +157,7 @@ $(".addButton").click(function() {
         id: thisProjectId
       },
       success: function(results) {
-        alert("New task added");
+        // alert("New task added");
         $("#inputNewTask" + thisProjectId).val('')
       },
       error: function(err) {
@@ -160,7 +169,6 @@ $(".addButton").click(function() {
 
 
 // Mark task as DONE/UNDONE
-
 $('input[type="checkbox"]').click(function() {
   var taskCompletion = true;
   var taskStatus = "Completed"
@@ -169,7 +177,7 @@ $('input[type="checkbox"]').click(function() {
   var url = '/markdone/' + markTaskId;
   if ($(this).prop("checked") == true) {
     taskCompletion = true
-    $('#taskRow ' + markTaskId).tooltip({
+    $('#taskRow' + markTaskId).tooltip({
       disabled: true
     })
   } else if ($(this).prop("checked") == false) {
@@ -187,22 +195,23 @@ $('input[type="checkbox"]').click(function() {
       success: function(results) {
         console.log("Marking done/undone");
         var imageSpan = document.getElementById('imgSpan' + markTaskId)
-        var parent = document.getElementById('taskDescription ' + markTaskId)
-
-
+        var parent = document.getElementById('taskDescription' + markTaskId)
         if (taskCompletion === true) {
-          if (imageSpan !== null) {
+          parent.classList.add('thick')
+          if (priority) {
             imageSpan.style.display = "none";
-            parent.classList.add('thick')
-          } else {
-            parent.classList.add('thick')
           }
         } else {
-          if (imageSpan !== null) {
+          if (imageSpan) {
             imageSpan.style.display = "inline-block";
             parent.classList.remove('thick')
           } else {
-            parent.classList.remove('thick')
+            if (!priority) {
+              parent.classList.remove('thick')
+            } else {
+              parent.classList.remove('thick')
+              var newImg = $("<img id='imgSpan" + markTaskId + "' class='imgSpan' src='images/priority" + priority + ".png' alt='Img'>").prependTo(parent);
+            }
           }
         }
       },
@@ -215,7 +224,7 @@ $('input[type="checkbox"]').click(function() {
 
 
 // Set priority for Task
-$(".setTaskPriority").click( function(){
+$(".setTaskPriority").click(function() {
   var priorityTaskId = $(this).attr("data-id");
   var url = '/editPriority'
   // alert(priorityTaskId)
@@ -232,18 +241,20 @@ $(".setTaskPriority").click( function(){
             id: priorityTaskId
           },
           success: function(result) {
-            $("#setPriorityModal" + priorityTaskId).modal('hide')
+
             var parent = document.getElementsByClassName("taskDescription " + priorityTaskId)
             var oldImg = document.getElementById("imgSpan" + priorityTaskId)
+            if (!oldImg) {
+              var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
+
+            }
             oldImg.remove();
             var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
+            $("#setPriorityModal" + priorityTaskId).modal('hide')
           },
           error: function(err) {
             console.log(err);
           }
-          //     })
-          //   })
-          // })
         })
       })
     })
@@ -253,41 +264,44 @@ $(".setTaskPriority").click( function(){
 
 
 //Delete Task by ID
-  $(".deleteTask").click(function() {
-    alert('I am inside')
-    var delTaskId = $(this).attr("data-id");
+$(".deleteTask").click(function() {
+  // alert('I am inside')
+  var delTaskId = $(this).attr("data-id");
+  // alert(delTaskId);
+  $("#deleteTaskModal" + delTaskId).on('show.bs.modal', function() {
+    var url = '/deletetask'
     // alert(delTaskId);
-    $("#deleteTaskModal"+delTaskId).on('show.bs.modal', function() {
-      var url = '/deletetask'
-      alert(delTaskId);
-      $("#confirmDeleteTask"+delTaskId).click(function(event) {
-        event.preventDefault();
-        $.post({
-          url: url,
-          data:{
-            id: delTaskId
-          },
-          success: function(result) {
-            $("#deleteTaskModal"+delTaskId).modal('hide');
-            document.getElementById('taskRow' + delTaskId).remove();
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
+    $("#confirmDeleteTask" + delTaskId).click(function(event) {
+      event.preventDefault();
+      $.post({
+        url: url,
+        data: {
+          id: delTaskId
+        },
+        success: function(result) {
+          $("#deleteTaskModal" + delTaskId).modal('hide');
+          document.getElementById('taskRow' + delTaskId).remove();
+        },
+        error: function(err) {
+          console.log(err);
+        }
       })
-    });
-  })
+    })
+  });
+})
 
 
 
 // Add new TODO list
-$('#addNewProjectBtn').on("click", function() {
-  $("#newProjectModal").on('show.bs.modal', function(event) {
+$('#addNewProjectBtn').click(function() {
+  // alert('Ok')
+  $("#newProjectModal").on('show.bs.modal', function() {
+    // alert("modal")
     var url = '/addNewList';
-    $("#confirmNewList").on("click", function() {
+    $(".confirmNewList").click(function(event) {
       var newListTitle = $(".newListNameInput").val()
       if (newListTitle !== null && newListTitle.length >= 3) {
+        event.preventDefault();
         $.ajax({
           url: url,
           type: "POST",
@@ -296,7 +310,6 @@ $('#addNewProjectBtn').on("click", function() {
           },
           success: function(result) {
             $("#newProjectModal").modal('hide')
-            console.log("Adding new list");
             window.location.href = '/tasks'
           },
           error: function(err) {
