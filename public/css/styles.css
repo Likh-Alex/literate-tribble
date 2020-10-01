@@ -8,6 +8,7 @@
 /* #5C9171 */
 /* Hovered Task */
 /* #FCFED5 */
+
 body {
   background-image: url("https://imgur.com/laFoZZI.png");
   background-position: center;
@@ -18,15 +19,13 @@ body {
   /* Resize the background image to cover the entire container */
   background-color: #cccccc;
   /* Used if the image is unavailable */
-}
 
-.imgSpan {
-  margin-right: 5px;
-  width: 10px;
 }
 
 .project {
-  margin: 100px 15% 5% 15%;
+  margin: 100px auto;
+  max-width: 700px;
+  /* text-align: center; */
 }
 
 .jumbotron {
@@ -184,6 +183,11 @@ body {
   width: 5px;
   height: auto;
   display: table-cell;
+}
+
+.imgSpan {
+  margin-right: 5px;
+  width: 10px;
 }
 
 .taskDescription {

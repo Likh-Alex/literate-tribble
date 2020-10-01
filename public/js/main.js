@@ -96,7 +96,7 @@ $(".editProject").click(function() {
             projectID: editProjectId
           },
           success: function(result) {
-            $("#editProjectTitleModal").modal('hide')
+            $("#editProjectTitleModal" + editProjectId).modal('hide')
             document.getElementsByClassName('projectName ' + editProjectId)[0].innerText = newTitle;
             editProjectId = null;
           },
@@ -228,38 +228,34 @@ $(".setTaskPriority").click(function() {
   var priorityTaskId = $(this).attr("data-id");
   var url = '/editPriority'
   // alert(priorityTaskId)
-  $("#setPriorityModal" + priorityTaskId).on('show.bs.modal', function() {
-    $(".choose").on('click', function() {
-      const newPriority = $(this).val();
-      // alert(newPriority)
-      $("#confirmEditPriority" + priorityTaskId).on("click", function(event) {
-        event.preventDefault();
-        $.post({
-          url: url,
-          data: {
-            priority: newPriority,
-            id: priorityTaskId
-          },
-          success: function(result) {
+  $(".priority" + priorityTaskId).click(function() {
+    const newPriority = $(this).attr("data-value");
+    // alert($(this).attr("data-value"))
+    $.post({
+      url: url,
+      data: {
+        priority: newPriority,
+        id: priorityTaskId
+      },
+      success: function(result) {
 
-            var parent = document.getElementsByClassName("taskDescription " + priorityTaskId)
-            var oldImg = document.getElementById("imgSpan" + priorityTaskId)
-            if (!oldImg) {
-              var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
+        var parent = document.getElementsByClassName("taskDescription " + priorityTaskId)
+        var oldImg = document.getElementById("imgSpan" + priorityTaskId)
+        if (!oldImg) {
+          var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
 
-            }
-            oldImg.remove();
-            var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
-            $("#setPriorityModal" + priorityTaskId).modal('hide')
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
-      })
+        }
+        oldImg.remove();
+        var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
+        $("#setPriorityModal" + priorityTaskId).modal('hide')
+      },
+      error: function(err) {
+        console.log(err);
+      }
     })
   })
 })
+
 
 
 

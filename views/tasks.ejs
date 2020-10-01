@@ -9,7 +9,7 @@
 <%if(userData !== null){%>
 
 <%userData.forEach(function(project, i){%>
-<div class="project" id='project<%=project.id%>'>
+<div class="project col-4" id='project<%=project.id%>'>
   <div class="projectHeader">
     <div class="projectTitle">
       <span>
@@ -109,15 +109,23 @@
 
       <!-- Task options -->
       <div class="taskOptions">
-        <span data-toggle="tooltip" data-placement="bottom" title="Set Priority">
-          <a data-toggle="modal" data-target="#setPriorityModal<%= task.id%>">
+        <!-- <form class="" action="index.html" method="post"> -->
+        <span data-toggle="tooltip" data-placement="top" title="Set Priority">
+          <a class="dropdown" id="dropdownMenuButton"data-id="<%= task.id%>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item priority<%= task.id%>" style="color: red;" data-value="4">Urgent</a>
+        <a class="dropdown-item priority<%= task.id%>" style="color: orange;" data-value='3'>High</a>
+        <a class="dropdown-item priority<%= task.id%>" style="color: blue;" data-value='2'>Normal</a>
+        <a class="dropdown-item priority<%= task.id%>" style="color: grey;" data-value='1'>Low</a>
+      </div>
       </a>
       </span>
+      <!-- </form> -->
 
       <i class="separatorDash fas fa-minus"></i>
 
-      <span data-toggle="tooltip" data-placement="bottom" title="Edit task">
+      <span data-toggle="tooltip" data-placement="top" title="Edit task">
         <a data-toggle="modal" data-target="#editTaskModal<%= task.id%>">
           <i id="editTask <%= task.id%>" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
         </a>
@@ -125,7 +133,7 @@
 
       <i class="separatorDash fas fa-minus"></i>
 
-      <span data-toggle="tooltip" data-placement="bottom" title="Delete task">
+      <span data-toggle="tooltip" data-placement="top" title="Delete task">
         <a data-toggle="modal" data-target="#deleteTaskModal<%= task.id%>">
           <i class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
         </a>
@@ -144,47 +152,11 @@
 
   <!-- TASK MODALS SECTION  -->
 
-  <!--Edit Task Priority Modal -->
-  <div class="modal fade" id="setPriorityModal<%= task.id%>" tabindex="-1" aria-labelledby="setPriorityModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <form class="" action="" method="">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Set Priority</h5>
-          </div>
-          <div class="modal-body">
-
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-danger">
-                <input type="radio" value="4" name="options" class="choose 4" autocomplete="off"> Urgent
-              </label>
-              <label class="btn btn-warning">
-                <input type="radio" value="3" name="options" class="choose 3" autocomplete="off"> High
-              </label>
-              <label class="btn btn-primary">
-                <input type="radio" value="2" name="options" class="choose 2" autocomplete="off"> Normal
-              </label>
-              <label class="btn btn-secondary">
-                <input type="radio" value="1" name="options" class="choose 1" autocomplete="off"> Low
-              </label>
-            </div>
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" id="confirmEditPriority<%=task.id%>" class="confirmEditPriority btn btn-primary">Set Priority</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-
   <!--Edit Task Modal -->
   <div class="modal fade" id="editTaskModal<%=task.id%>" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form  class="" action="" method="">
+        <form class="" action="" method="">
           <input type="hidden" id="editTaskId<%=task.id%>" name="id" value="" />
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
@@ -224,8 +196,6 @@
       </div>
     </div>
   </div>
-
-
 
 
 
@@ -320,4 +290,7 @@
 
 <%- include('partials/footer') %>
 
+<%}else{%>
+  
+<%- include('partials/footer') %>
 <%}%>
