@@ -49,8 +49,8 @@ $(".projectDeadline").on("click", function() {
   var today = new Date()
   url = '/setProjectDeadline'
   var projectId = $(this).attr('data-id')
-  alert(projectId)
-  $("#confirmEditDeadline" + projectId).on("click", function(event) {
+  // alert(projectId)
+  $("#confirmEditDeadline").on("click", function(event) {
     $(this).off();
     event.preventDefault();
     var deadline = new Date($("#deadLineInput" + projectId).val())
@@ -152,7 +152,7 @@ $(".deleteProject").click(function() {
 
 
 //Add new task
-$(".addButton").click(function() {
+$(".addButton").click(function(event) {
   // alert('hi')
   var thisProjectId = $(this).attr("data-id");
   var newTask = $("#inputNewTask" + thisProjectId).val()
@@ -239,8 +239,8 @@ $(".setTaskPriority").on("click", function() {
   var priorityTaskId = $(this).attr("data-id");
   var url = '/editPriority'
   $(this).off();
-  // alert(priorityTaskId)
-  $(".priority" + priorityTaskId).on("click", function() {
+  console.log(priorityTaskId);
+  $(".priority").on("click", function() {
     const newPriority = $(this).attr("data-value");
     // alert($(this).attr("data-value"))
     // $(this).off();
@@ -251,19 +251,23 @@ $(".setTaskPriority").on("click", function() {
         id: priorityTaskId
       },
       success: function(result) {
-
+        $(".setTaskPriority").on()
+        var doneTask = document.getElementsByClassName("taskDescription " + priorityTaskId + " thick")
         var parent = document.getElementsByClassName("taskDescription " + priorityTaskId)
         var oldImg = document.getElementById("imgSpan" + priorityTaskId)
-        if (!oldImg) {
-          var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
-
-        }
-        oldImg.remove();
-        var newImg = $("<img id='imgSpan" + priorityTaskId + "' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
-        $("#setPriorityModal" + priorityTaskId).modal('hide')
-      },
-      error: function(err) {
-        console.log(err);
+        if (doneTask && oldImg) {
+          document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
+          }
+          else if (doneTask && !oldImg) {
+            var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:none;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(doneTask);
+          } else if (!doneTask && !oldImg) {
+            var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:inline-block;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
+          } else {
+            document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
+          }
+          },
+          error: function(err) {
+              console.log(err);
       }
     })
   })
@@ -317,14 +321,15 @@ $('.editTask').on("click", function() {
 
 
 //Delete Task by ID
-$(".deleteTask").click(function() {
+$(".deleteTask").on("click", function() {
   // alert('I am inside')
   var delTaskId = $(this).attr("data-id");
   // alert(delTaskId);
-  $("#deleteTaskModal" + delTaskId).on('show.bs.modal', function() {
+  $("#deleteTaskModal").on('show.bs.modal', function() {
     var url = '/deletetask'
     // alert(delTaskId);
-    $("#confirmDeleteTask" + delTaskId).click(function(event) {
+    $("#confirmDeleteTask").on("click", function(event) {
+      $(this).off();
       event.preventDefault();
       $.post({
         url: url,
@@ -332,7 +337,7 @@ $(".deleteTask").click(function() {
           id: delTaskId
         },
         success: function(result) {
-          $("#deleteTaskModal" + delTaskId).modal('hide');
+          $("#deleteTaskModal").modal('hide');
           document.getElementById('taskRow' + delTaskId).remove();
         },
         error: function(err) {

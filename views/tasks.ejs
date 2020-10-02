@@ -79,6 +79,7 @@
       <%}%>
         </span>
       </div>
+
       <div class="separator"></div>
 
       <!-- Task description -->
@@ -90,13 +91,13 @@
       <%} else {%>
       <div class="taskDescription <%= task.id%>" id="taskDescription<%= task.id%>">
         <% if(task.priority == 4){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority4.png" alt="Img">
+        <img id="imgSpan<%= task.id%>" class="imgSpan" src="images/priority4.png" alt="Img">
         <%}else if(task.priority == 3){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority3.png" alt="Img">
+        <img id="imgSpan<%= task.id%>" class="imgSpan" src="images/priority3.png" alt="Img">
         <%}else if(task.priority == 2){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority2.png" alt="Img">
+        <img id="imgSpan<%= task.id%>" class="imgSpan" src="images/priority2.png" alt="Img">
         <%}else if(task.priority == 1){%>
-        <img id="imgSpan<%= task.id%>" class="imgSpan <%= task.id%>" src="images/priority1.png" alt="Img">
+        <img id="imgSpan<%= task.id%>" class="imgSpan" src="images/priority1.png" alt="Img">
         <%}%>
           <span id="task<%= task.id%>">
         <%= task.name%>
@@ -113,10 +114,10 @@
           <a class="dropdown" id="dropdownMenuButton"data-id="<%= task.id%>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item priority<%= task.id%>" style="color: red;" data-value="4">Urgent</a>
-        <a class="dropdown-item priority<%= task.id%>" style="color: orange;" data-value='3'>High</a>
-        <a class="dropdown-item priority<%= task.id%>" style="color: blue;" data-value='2'>Normal</a>
-        <a class="dropdown-item priority<%= task.id%>" style="color: grey;" data-value='1'>Low</a>
+        <a class="dropdown-item priority" style="color: red;" data-value="4">Urgent</a>
+        <a class="dropdown-item priority" style="color: orange;" data-value='3'>High</a>
+        <a class="dropdown-item priority" style="color: blue;" data-value='2'>Normal</a>
+        <a class="dropdown-item priority" style="color: grey;" data-value='1'>Low</a>
       </div>
       </a>
       </span>
@@ -133,15 +134,14 @@
       <i class="separatorDash fas fa-minus"></i>
 
       <span data-toggle="tooltip" data-placement="top" title="Delete task">
-        <a data-toggle="modal" data-target="#deleteTaskModal<%= task.id%>">
+        <a data-toggle="modal" data-target="#deleteTaskModal">
           <i class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
         </a>
       </span>
     </div>
   </div>
-</div>
 
-<%})%>
+  <%})%>
 </div>
 </div>
 

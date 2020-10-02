@@ -109,9 +109,7 @@ app.post('/deleteProject', async function(req, res) {
 
 // Add New task
 app.post("/submitTask", function(req, res) {
-  const task = req.body
-  console.log(task);
-  console.log("adding new task " + task);
+  console.log("adding new task " + req.body.name);
   pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
   res.sendStatus(200);
 })
