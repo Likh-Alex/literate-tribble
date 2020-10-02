@@ -1,14 +1,14 @@
 // Add new TODO list
 $('#addNewProjectBtn').on("click", function() {
   $('#addNewProjectBtn').off();
-  $(this).off();
   // alert('Ok')
   $("#newProjectModal").on('show.bs.modal', function() {
-    // $("#newProjectModal").off()
+    $("#newProjectModal").off()
     // alert("modal")
     var url = '/addNewList';
-    $(".confirmNewList").click(function(event) {
+    $(".confirmNewList").on("click", function(event) {
       var newListTitle = $("#newListNameInput").val()
+      $(".confirmNewList").off();
       // alert(newListTitle)
       if (newListTitle.length < 1) {
         alert("Please enter the list name")
@@ -24,12 +24,11 @@ $('#addNewProjectBtn').on("click", function() {
             success: function(result) {
               $("#newProjectModal").modal('hide')
               $("#newListNameInput").val('');
-              // var id = result.data.id
-              // var name = result.data.name
+              var id = result.data.id
+              var name = result.data.name
+              $(".projects").append("<div class='project col-4' id='project" + id + "'> <div class='projectHeader'> <div class='projectTitle'> <span> <a data-toggle='modal' data-target='#editDeadLineModal'> <i data-id='" + id + "' class='projectDeadline far fa-calendar-alt fa-2x' data-toggle='tooltip' data-placement='top' title='Set Deadline'></i>   </a> </span> <h5 class='projectName " + id + "'>" + name + " </h5> <div class='projectButtons'> <span data-toggle='tooltip' data-placement='top' title='Edit Project Title'> <a data-toggle='modal' data-target='#editProjectTitleModal'> <i id='editProjectName' class='editProject fas fa-pencil-alt' data-name='" + name + " data-id='" + id + "'></i> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='top' title='Delete Project'> <a data-toggle='modal' data-target='#deleteProjectModal'> <i id='deleteProject>' class='deleteProject far fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div> </div>")
 
-              // $('.projects').append("<div class='project col-4' id='project" + id + "'> <div class='projectHeader'> <div class='projectTitle'> <span> <a data-toggle='modal' data-target='#editDeadLineModal" + id "'> <i data-id='" + id + "' class='projectDeadline far fa-calendar-alt fa-2x' data-toggle='ooltip' data-placement='top' title='Set Deadline'></i>   </a> </span> <h5 class='projectName " + id + "'>")
-              var list = $('.project col-4').clone()
-                ('.projects').append(list)
+
             },
             error: function(err) {
               $("#newProjectModal").on();
@@ -80,11 +79,11 @@ $(".projectDeadline").on("click", function() {
 
 // Edit Project Title by ID
 $(".editProject").on("click", function() {
-  $(this).off();
+  // $(this).off();
   var editProjectId = $(this).attr('data-id');
-  alert(editProjectId)
+  // alert(editProjectId)
   var currentTitle = document.getElementsByClassName('projectName ' + editProjectId)[0].innerText;
-  alert(currentTitle)
+  // alert(currentTitle)
   $("#editProjectNameInput").val(currentTitle)
   var url = '/editProjectName';
   $('#confirmEditProjectName').on("click", function(event) {
@@ -93,26 +92,25 @@ $(".editProject").on("click", function() {
     if (currentTitle === newTitle) {
       event.preventDefault();
       alert("New Title should be different")
-    } else {
+    }
+    if (newTitle.length > 1 && newTitle.length <= 25) {
       event.preventDefault();
-      if (newTitle.length > 1 && newTitle.length <= 25) {
-        $.ajax({
-          type: "POST",
-          url: url,
-          // async: false,
-          data: {
-            projectName: newTitle,
-            projectID: editProjectId
-          },
-          success: function(result) {
-            $("#editProjectTitleModal").modal('hide')
-            document.getElementsByClassName('projectName ' + editProjectId)[0].innerText = newTitle;
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
-      }
+      $.ajax({
+        type: "POST",
+        url: url,
+        // async: false,
+        data: {
+          projectName: newTitle,
+          projectID: editProjectId
+        },
+        success: function(result) {
+          $("#editProjectTitleModal").modal('hide')
+          document.getElementsByClassName('projectName ' + editProjectId)[0].innerText = newTitle;
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      })
     }
   })
 })
@@ -123,11 +121,11 @@ $(".editProject").on("click", function() {
 // Delete Project by ID
 $(".deleteProject").click(function() {
   var deleteProjectId = $(this).attr('data-id');
-  // alert(deleteProjectId)
+  alert(deleteProjectId)
   var url = '/deleteProject';
-  $("#deleteProjectModal").on('show.bs.modal', function(event) {
+  $("#deleteProjectModal").on('show.bs.modal', function() {
     // alert("i'm modal")
-    $("#confirmDeleteProject").click(function() {
+    $("#confirmDeleteProject").click(function(event) {
       // alert("i'm clicked")
       event.preventDefault();
       $.post({
@@ -257,17 +255,16 @@ $(".setTaskPriority").on("click", function() {
         var oldImg = document.getElementById("imgSpan" + priorityTaskId)
         if (doneTask && oldImg) {
           document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
-          }
-          else if (doneTask && !oldImg) {
-            var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:none;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(doneTask);
-          } else if (!doneTask && !oldImg) {
-            var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:inline-block;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
-          } else {
-            document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
-          }
-          },
-          error: function(err) {
-              console.log(err);
+        } else if (doneTask && !oldImg) {
+          var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:none;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(doneTask);
+        } else if (!doneTask && !oldImg) {
+          var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:inline-block;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(parent);
+        } else {
+          document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
+        }
+      },
+      error: function(err) {
+        console.log(err);
       }
     })
   })
@@ -347,9 +344,6 @@ $(".deleteTask").on("click", function() {
     })
   });
 })
-
-
-
 
 
 
