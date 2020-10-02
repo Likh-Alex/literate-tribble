@@ -60,13 +60,42 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
     userData: userData
   })
 })
+// Add new TodoList
+app.post('/addNewList', async function(req, res) {
+  console.log("adding new List");
+  const userid = req.user.id;
+  var listName = req.body.listName;
+  await pool.query("INSERT INTO projects (name, user_id) VALUES ($1,$2)", [listName, userid])
+  var list = await pool.query(`SELECT * FROM projects WHERE projects.name=$1`, [listName])
+  var listData = {
+    id: list.rows[0].id,
+    name: list.rows[0].name,
+    pDeadline: list.rows[0].p_deadline
+  }
+  console.log(listData);
+  return res.json({
+    data: listData
+  })
+})
 
-
-// Delete task by id
-app.post('/deletetask', function(req, res) {
-  pool.query("DELETE FROM tasks WHERE id = ($1)", [req.body.id]);
-  console.log("Deleting task with ID " + req.body.id);
+//Set Deadline for Project
+app.post("/setProjectDeadline", function(req, res) {
+  console.log("Setting deadline for Project");
+  console.log(req.body);
+  pool.query(`UPDATE projects SET p_deadline = TO_DATE('${req.body.projectDeadline}', 'YYYY/MM/DD') WHERE id = ${req.body.projectID}`);
   res.sendStatus(200);
+})
+
+// Edit Project name by ID
+app.post("/editProjectName", function(req, res) {
+  console.log("Editing Project Name for" + req.body.projectName);
+  // var attempt = 1
+  console.log(req.body);
+  // console.log(attempt);
+  var projectId = Number(req.body.projectID)
+  pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, projectId]);
+  res.sendStatus(200);
+  // attempt +=1;
 })
 
 // Delete Project By ID
@@ -82,16 +111,22 @@ app.post('/deleteProject', async function(req, res) {
 app.post("/submitTask", function(req, res) {
   const task = req.body
   console.log(task);
-  console.log("adding new task");
+  console.log("adding new task " + task);
   pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
   res.sendStatus(200);
 })
 
-//Set Deadline for Project
-app.post("/setProjectDeadline", function(req, res) {
-  console.log("Setting deadline for Project");
-  console.log(req.body);
-  pool.query(`UPDATE projects SET p_deadline = TO_DATE('${req.body.projectDeadline}', 'YYYY/MM/DD') WHERE id = ${req.body.projectID}`);
+// Mark task DONE/UNDONE
+app.post('/markdone/:id', function(req, res) {
+  console.log("Marking done");
+  pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
+  res.sendStatus(200);
+})
+//Edit priority by Task ID
+app.post('/editPriority', function(req, res) {
+  console.log("Editing priority for task ID " + req.body.id + ' with priority ' + req.body.priority);
+  // const userId = req.user.id;
+  pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
   res.sendStatus(200);
 })
 
@@ -99,8 +134,8 @@ app.post("/setProjectDeadline", function(req, res) {
 app.post('/edit', function(req, res) {
   var deadline = req.body.deadline;
   var isoDeadline = deadline.toISOString;
-  console.log("editing task");
-  console.log(req.body);
+  console.log("editing task " + req.body.task);
+  // console.log(req.body);
   const userId = req.user.id;
   pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.task, req.body.id]);
   if (req.body.deadline !== 'Invalid Date') {
@@ -112,38 +147,10 @@ app.post('/edit', function(req, res) {
   })
 })
 
-// Edit Project name by ID
-app.post("/editProjectName", function(req, res) {
-  console.log("Editing Project Name");
-  // var attempt = 1
-  console.log(req.body);
-  // console.log(attempt);
-  var projectId = Number(req.body.projectID)
-  pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, projectId]);
-  res.sendStatus(200);
-  // attempt +=1;
-})
-
-//Edit priority by Task ID
-app.post('/editPriority', function(req, res) {
-  console.log("Editing priority for task ID " + req.body.id + ' with priority ' + req.body.priority);
-  // const userId = req.user.id;
-  pool.query("UPDATE tasks SET priority=$1 WHERE id=$2", [req.body.priority, req.body.id]);
-  res.sendStatus(200);
-})
-
-// Mark task DONE/UNDONE
-app.post('/markdone/:id', function(req, res) {
-  console.log("Marking done");
-  pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
-  res.sendStatus(200);
-})
-
-// Add new TodoList
-app.post('/addNewList', function(req, res) {
-  console.log("adding new List");
-  const userid = req.user.id;
-  pool.query("INSERT INTO projects (name, user_id) VALUES ($1,$2)", [req.body.param, userid])
+// Delete task by id
+app.post('/deletetask', function(req, res) {
+  pool.query("DELETE FROM tasks WHERE id = ($1)", [req.body.id]);
+  console.log("Deleting task with ID " + req.body.id);
   res.sendStatus(200);
 })
 

@@ -1,10 +1,57 @@
+// Add new TODO list
+$('#addNewProjectBtn').on("click", function() {
+  $('#addNewProjectBtn').off();
+  $(this).off();
+  // alert('Ok')
+  $("#newProjectModal").on('show.bs.modal', function() {
+    // $("#newProjectModal").off()
+    // alert("modal")
+    var url = '/addNewList';
+    $(".confirmNewList").click(function(event) {
+      var newListTitle = $("#newListNameInput").val()
+      // alert(newListTitle)
+      if (newListTitle.length < 1) {
+        alert("Please enter the list name")
+      } else {
+        if (newListTitle.length >= 1 && newListTitle.length <= 15) {
+          event.preventDefault();
+          $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+              listName: $("#newListNameInput").val()
+            },
+            success: function(result) {
+              $("#newProjectModal").modal('hide')
+              $("#newListNameInput").val('');
+              // var id = result.data.id
+              // var name = result.data.name
+
+              // $('.projects').append("<div class='project col-4' id='project" + id + "'> <div class='projectHeader'> <div class='projectTitle'> <span> <a data-toggle='modal' data-target='#editDeadLineModal" + id "'> <i data-id='" + id + "' class='projectDeadline far fa-calendar-alt fa-2x' data-toggle='ooltip' data-placement='top' title='Set Deadline'></i>   </a> </span> <h5 class='projectName " + id + "'>")
+              var list = $('.project col-4').clone()
+                ('.projects').append(list)
+            },
+            error: function(err) {
+              $("#newProjectModal").on();
+              console.log(err);
+            }
+          })
+        }
+      }
+    })
+  })
+})
+
+
 // Set Deadline for Project
-$(".projectDeadline").click(function() {
+$(".projectDeadline").on("click", function() {
+  // $(this).off();
   var today = new Date()
   url = '/setProjectDeadline'
   var projectId = $(this).attr('data-id')
   alert(projectId)
   $("#confirmEditDeadline" + projectId).on("click", function(event) {
+    $(this).off();
     event.preventDefault();
     var deadline = new Date($("#deadLineInput" + projectId).val())
     if (deadline > today) {
@@ -30,57 +77,19 @@ $(".projectDeadline").click(function() {
   })
 })
 
-//Edit existing task by ID
-$('.editTask').click(function() {
-  var editTaskId = $(this).attr("data-id");
-  $("#editTaskId").val($(this).attr("data-id"));
-  $("#editTaskDescription" + editTaskId).val(document.getElementById('task' + editTaskId).innerText);
-  var url = '/edit';
-  $("#confirmEditTask" + editTaskId).on("click", function(event) {
-    event.preventDefault()
-    var newTask = $("#editTaskDescription" + editTaskId).val();
-    // alert(newTask)
-    var today = new Date()
-    var deadline = new Date($("#deadLineEntry" + editTaskId).val())
-    // alert(deadline)
-    if (today > deadline) {
-      alert("Deadline must be later than today")
-    } else {
-      $.post({
-        url: url,
-        data: {
-          task: newTask,
-          deadline: deadline.toLocaleString(),
-          id: editTaskId
-        },
-        success: function(result) {
-          $("#editTaskModal" + editTaskId).modal('hide')
-          console.log("editing task");
-          // alert(result.deadline)
-          document.getElementById('task' + editTaskId).innerText = newTask
-          if (result.deadline !== undefined) {
-            document.getElementById('taskRow' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
-          }
-        },
-        error: function(err) {
-          console.log(err);
-        }
-      })
-    }
-  })
-})
-
 
 // Edit Project Title by ID
-$(".editProject").click(function() {
+$(".editProject").on("click", function() {
+  $(this).off();
   var editProjectId = $(this).attr('data-id');
-  // alert(editProjectId)
+  alert(editProjectId)
   var currentTitle = document.getElementsByClassName('projectName ' + editProjectId)[0].innerText;
-  // alert(currentTitle)
-  $("#editProjectNameInput" + editProjectId).val(currentTitle)
+  alert(currentTitle)
+  $("#editProjectNameInput").val(currentTitle)
   var url = '/editProjectName';
-  $('#confirmEditProjectName' + editProjectId).click(function(event) {
-    var newTitle = $("#editProjectNameInput" + editProjectId).val();
+  $('#confirmEditProjectName').on("click", function(event) {
+    $(this).off();
+    var newTitle = $("#editProjectNameInput").val();
     if (currentTitle === newTitle) {
       event.preventDefault();
       alert("New Title should be different")
@@ -96,9 +105,8 @@ $(".editProject").click(function() {
             projectID: editProjectId
           },
           success: function(result) {
-            $("#editProjectTitleModal" + editProjectId).modal('hide')
+            $("#editProjectTitleModal").modal('hide')
             document.getElementsByClassName('projectName ' + editProjectId)[0].innerText = newTitle;
-            editProjectId = null;
           },
           error: function(err) {
             console.log(err);
@@ -109,14 +117,17 @@ $(".editProject").click(function() {
   })
 })
 
+
+
+
 // Delete Project by ID
 $(".deleteProject").click(function() {
   var deleteProjectId = $(this).attr('data-id');
   // alert(deleteProjectId)
   var url = '/deleteProject';
-  $("#deleteProjectModal" + deleteProjectId).on('show.bs.modal', function(event) {
+  $("#deleteProjectModal").on('show.bs.modal', function(event) {
     // alert("i'm modal")
-    $("#confirmDeleteProject" + deleteProjectId).click(function() {
+    $("#confirmDeleteProject").click(function() {
       // alert("i'm clicked")
       event.preventDefault();
       $.post({
@@ -125,7 +136,7 @@ $(".deleteProject").click(function() {
           id: deleteProjectId
         },
         success: function() {
-          $("#deleteProjectModal" + deleteProjectId).modal('hide');
+          $("#deleteProjectModal").modal('hide');
           console.log("deleting project");
           document.getElementById('project' + deleteProjectId).remove();
         },
@@ -148,7 +159,7 @@ $(".addButton").click(function() {
   var url = '/submitTask';
   event.preventDefault()
   // alert(newTask)
-  if (newTask !== '' && newTask.length >= 3) {
+  if (newTask !== '' && newTask.length >= 1) {
     $.ajax({
       url: url,
       type: "POST",
@@ -224,13 +235,15 @@ $('input[type="checkbox"]').click(function() {
 
 
 // Set priority for Task
-$(".setTaskPriority").click(function() {
+$(".setTaskPriority").on("click", function() {
   var priorityTaskId = $(this).attr("data-id");
   var url = '/editPriority'
+  $(this).off();
   // alert(priorityTaskId)
-  $(".priority" + priorityTaskId).click(function() {
+  $(".priority" + priorityTaskId).on("click", function() {
     const newPriority = $(this).attr("data-value");
     // alert($(this).attr("data-value"))
+    // $(this).off();
     $.post({
       url: url,
       data: {
@@ -256,7 +269,51 @@ $(".setTaskPriority").click(function() {
   })
 })
 
-
+//Edit existing task by ID
+$('.editTask').on("click", function() {
+  $(this).off();
+  var editTaskId = $(this).attr("data-id");
+  $("#editTaskId").val($(this).attr("data-id"));
+  $("#editTaskDescription").val(document.getElementById('task' + editTaskId).innerText);
+  var url = '/edit';
+  $("#confirmEditTask").on("click", function(event) {
+    $(this).off();
+    event.preventDefault()
+    var newTask = $("#editTaskDescription").val();
+    if (newTask.length < 1 || newTask.length > 25) {
+      alert("Please match requested format")
+    } else {
+      // alert(newTask)
+      var today = new Date()
+      var deadline = new Date($("#deadLineEntry").val())
+      // alert(deadline)
+      if (today >= deadline) {
+        alert("Deadline must be later than today")
+      } else {
+        $.post({
+          url: url,
+          data: {
+            task: newTask,
+            deadline: deadline.toLocaleString(),
+            id: editTaskId
+          },
+          success: function(result) {
+            $("#editTaskModal").modal('hide')
+            // console.log("editing task");
+            // alert(result.deadline)
+            document.getElementById('task' + editTaskId).innerText = newTask
+            if (result.deadline !== undefined) {
+              document.getElementById('taskRow' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
+            }
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        })
+      }
+    }
+  })
+})
 
 
 //Delete Task by ID
@@ -288,34 +345,7 @@ $(".deleteTask").click(function() {
 
 
 
-// Add new TODO list
-$('#addNewProjectBtn').click(function() {
-  // alert('Ok')
-  $("#newProjectModal").on('show.bs.modal', function() {
-    // alert("modal")
-    var url = '/addNewList';
-    $(".confirmNewList").click(function(event) {
-      var newListTitle = $(".newListNameInput").val()
-      if (newListTitle !== null && newListTitle.length >= 3) {
-        event.preventDefault();
-        $.ajax({
-          url: url,
-          type: "POST",
-          data: {
-            param: $(".newListNameInput").val()
-          },
-          success: function(result) {
-            $("#newProjectModal").modal('hide')
-            window.location.href = '/tasks'
-          },
-          error: function(err) {
-            console.log(err);
-          }
-        })
-      }
-    })
-  })
-})
+
 
 
 $(function() {
