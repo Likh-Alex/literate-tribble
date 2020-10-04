@@ -8,7 +8,6 @@
 /* #5C9171 */
 /* Hovered Task */
 /* #FCFED5 */
-
 body {
   background-image: url("https://imgur.com/laFoZZI.png");
   background-position: center;
@@ -19,7 +18,6 @@ body {
   /* Resize the background image to cover the entire container */
   background-color: #cccccc;
   /* Used if the image is unavailable */
-
 }
 
 .project {
@@ -56,6 +54,7 @@ body {
 }
 
 .projectName {
+  align-items: center;
   position: absolute;
   display: inline-block;
   margin: 5px;
@@ -199,11 +198,10 @@ body {
   border-right: 1px solid #ababab;
 }
 
-.thick {
+.done {
   text-decoration-line: line-through;
   text-decoration-style: solid;
   text-decoration-color: red;
-  text-decoration-thickness: 5px;
 }
 
 .taskOptions {
@@ -233,6 +231,7 @@ body {
 
 .separatorDash {
   color: #d9d9d9;
+  padding: 0 5px;
   font-size: 10px;
   transform: rotate(90deg);
 }

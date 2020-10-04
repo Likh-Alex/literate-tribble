@@ -6,8 +6,10 @@
 <div class="logoutButton">
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </div>
+
 <div class="projects">
   <%if(userData){%>
+
   <%userData.forEach(function(project, i){%>
   <div class="project col-4" id='project<%=project.id%>'>
     <div class="projectHeader">
@@ -18,12 +20,12 @@
           </a>
         </span>
         <%if(project.deadline == null){%>
-        <h5 class="projectName <%=project.id%>">
+        <h5 class="projectName <%=project.id%>" data-toggle="tooltip" data-placement="top" title="">
           <%=project.name%>
         </h5>
         <%}else{%>
         <% var deadline = project.deadline.toDateString()%>
-        <h5 class="projectName <%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline <%=deadline%>" style="align-items: center;">
+        <h5 class=" projectName <%=project.id%>" data-toggle="tooltip" data-placement="top" title="Deadline: <%=deadline%>">
           <%=project.name%>
         </h5>
         <%}%>
@@ -71,6 +73,7 @@
       <% var taskDeadline = task.t_deadline.toDateString();%>
       <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
         <%}%>
+
     <div class="doneMark">
       <span >
         <% if(task.completed===true){%>
@@ -85,7 +88,7 @@
 
       <!-- Task description -->
         <% if(task.completed===true){ %>
-        <div class="taskDescription <%= task.id%> thick" id="taskDescription<%= task.id%>">
+        <div class="taskDescription <%= task.id%> done" id="taskDescription<%= task.id%>">
           <span id="task<%= task.id%>"> <%= task.name%> </span>
         </div>
 
@@ -111,7 +114,7 @@
       <!-- Task options -->
       <div class="taskOptions">
         <!-- <form class="" action="index.html" method="post"> -->
-        <span data-toggle="tooltip" data-placement="top" title="Set Priority">
+        <span data-toggle="tooltip" data-placement="left" title="Set Priority">
           <a class="dropdown" id="dropdownMenuButton"data-id="<%= task.id%>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -126,15 +129,13 @@
 
         <i class="separatorDash fas fa-minus"></i>
 
-        <span data-toggle="tooltip" data-placement="top" title="Edit task">
-          <a data-toggle="modal" data-target="#editTaskModal">
-            <i id="editTask <%= task.id%>" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>"></i>
-          </a>
+        <span data-toggle="tooltip" data-placement="left" title="Edit task">
+          <i id="editTask <%= task.id%>" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>" data-toggle="modal" data-target="#editTaskModal"></i>
         </span>
 
         <i class="separatorDash fas fa-minus"></i>
 
-        <span data-toggle="tooltip" data-placement="top" title="Delete task">
+        <span data-toggle="tooltip" data-placement="left" title="Delete task">
           <a data-toggle="modal" data-target="#deleteTaskModal">
             <i class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
           </a>
@@ -146,13 +147,15 @@
   </div>
 </div>
 </div>
+
 <%})%>
+
 <%- include('partials/footer') %>
 <%- include('partials/modals') %>
 
 
 
-
+</div>
 <%}else{%>
 <%- include('partials/footer') %>
 <%- include('partials/modals') %>

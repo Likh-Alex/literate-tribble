@@ -60,6 +60,8 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
     userData: userData
   })
 })
+
+
 // Add new TodoList
 app.post('/addNewList', async function(req, res) {
   console.log("adding new List");
@@ -81,37 +83,47 @@ app.post('/addNewList', async function(req, res) {
 //Set Deadline for Project
 app.post("/setProjectDeadline", function(req, res) {
   console.log("Setting deadline for Project");
-  console.log(req.body);
+  // console.log(req.body);
   pool.query(`UPDATE projects SET p_deadline = TO_DATE('${req.body.projectDeadline}', 'YYYY/MM/DD') WHERE id = ${req.body.projectID}`);
   res.sendStatus(200);
 })
 
 // Edit Project name by ID
 app.post("/editProjectName", function(req, res) {
-  console.log("Editing Project Name for" + req.body.projectName);
-  // var attempt = 1
-  console.log(req.body);
-  // console.log(attempt);
+  console.log("Editing Project Name for " + req.body.projectName);
+  // console.log(req.body);
   var projectId = Number(req.body.projectID)
   pool.query("UPDATE projects SET name=$1 WHERE id=$2", [req.body.projectName, projectId]);
   res.sendStatus(200);
-  // attempt +=1;
-})
+});
 
 // Delete Project By ID
 app.post('/deleteProject', async function(req, res) {
   await pool.query(`DELETE FROM tasks WHERE tasks.project_id = $1`, [req.body.id])
-  console.log("Deleted tasks for project");
   await pool.query("DELETE FROM projects WHERE id = $1", [req.body.id])
-  console.log("Deleted project");
+  console.log("Deleted project with ID " + req.body.id);
   res.sendStatus(200);
 })
 
 // Add New task
-app.post("/submitTask", function(req, res) {
-  console.log("adding new task " + req.body.name);
-  pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [req.body.name, req.body.id]);
-  res.sendStatus(200);
+app.post("/submitTask", async function(req, res) {
+  var taskName = req.body.name
+  console.log("adding new task " + taskName);
+  await pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [taskName, req.body.id]);
+  var task = await pool.query(`SELECT * FROM tasks WHERE tasks.name=$1`, [taskName])
+  var taskData = {
+    id: task.rows[0].id,
+    name: task.rows[0].name,
+    status: task.rows[0].status,
+    project_id: task.rows[0].project_id,
+    t_deadline: task.rows[0].t_deadline,
+    priority: task.rows[0].priority,
+    completed: task.rows[0].completed
+  }
+  console.log(taskData);
+  return res.json({
+    data: taskData
+  })
 })
 
 // Mark task DONE/UNDONE
