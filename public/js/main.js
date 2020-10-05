@@ -269,7 +269,7 @@ $(document).ready(function() {
     var element = $('#taskDescription' + priorityTaskId)
     if (element.hasClass("done")) {
       $('#dropdownMenuButton' + priorityTaskId).prop('disabled', true);
-      alert("Task is completed")
+      alert("Task is complete")
     }
     $(".priority" + priorityTaskId).on("click", function() {
       var newPriority = $(this).attr("data-value");
@@ -303,8 +303,9 @@ $(document).ready(function() {
 
   //Edit existing task by ID
   $("body").delegate(".editTask", "click", function() {
-    $(this).off();
     var editTaskId = $(this).attr("data-id");
+    var element = $('#taskDescription' + editTaskId)
+    $(this).off();
     $("#editTaskId").val($(this).attr("data-id"));
     $("#editTaskDescription").val(document.getElementById('task' + editTaskId).innerText);
     var url = '/edit';
@@ -314,6 +315,7 @@ $(document).ready(function() {
       var newTask = $("#editTaskDescription").val();
       if (newTask.length < 1 || newTask.length > 25) {
         alert("Please match requested format")
+        $("#editTaskModal").modal('hide')
       } else {
         // alert(newTask)
         var today = new Date()
@@ -331,7 +333,7 @@ $(document).ready(function() {
             },
             success: function(result) {
               $("#editTaskModal").modal('hide')
-              document.getElementById('task' + editTaskId).innerText = newTask
+              $('#task' + editTaskId).text(newTask)
               if (result.deadline !== 'Invalid Date') {
                 // $('#taskRow' + editTaskId).attr('data-original-title', "Deadline: " + deadline.toDateString())
                 document.getElementById('taskRow' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();

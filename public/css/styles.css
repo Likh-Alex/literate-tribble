@@ -234,17 +234,17 @@ body {
 }
 
 .taskOptions .deleteTask, .editTask, .setTaskPriority {
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   color: #ababab;
 }
 
-.separatorDash {
+/* .separatorDash {
   color: #d9d9d9;
   padding: 0 5px;
   font-size: 10px;
   transform: rotate(90deg);
-}
+} */
 
 .newProject {
   text-align: center;

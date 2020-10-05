@@ -35,8 +35,7 @@
         </a>
         </span>
 
-        <i class="separatorDash fas fa-minus"></i>
-
+<i class="dropdown-toggle-split"></i>
         <span data-toggle="tooltip" data-placement="top" title="Delete Project">
           <a data-toggle="modal" data-target="#deleteProjectModal">
             <i id="deleteProject>" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>
@@ -120,18 +119,18 @@
           <a class="dropdown-item priority<%= task.id%>" style="color: red;" data-value="4">Urgent</a>
           <a class="dropdown-item priority<%= task.id%>" style="color: orange;" data-value='3'>High</a>
           <a class="dropdown-item priority<%= task.id%>" style="color: blue;" data-value='2'>Normal</a>
-          <a class="dropdown-item priority<%= task.id%>" style="color: grey;" data-value='1'>Low</a>
+          <a class="dropdown-item priority<%= task.id%>" style=" color: grey;" data-value='1'>Low</a>
         </div>
         </a>
 
 
-        <i class="separatorDash fas fa-minus"></i>
+        <i class="dropdown-toggle-split"></i>
 
         <span data-toggle="tooltip" data-placement="left" title="Edit task">
           <i id="editTask <%= task.id%>" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>" data-toggle="modal" data-target="#editTaskModal"></i>
         </span>
 
-        <i class="separatorDash fas fa-minus"></i>
+        <i class="dropdown-toggle-split"></i>
 
         <a data-toggle="modal" data-target="#deleteTaskModal">
           <i data-toggle="tooltip" data-placement="left" title="Delete task" class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
