@@ -213,6 +213,12 @@ body {
   text-align: center;
 }
 
+.dropdown-menu {
+  /* font-size: 12px; */
+  min-width: 15px ;
+}
+
+
 .taskRow:hover .taskOptions {
   visibility: visible;
 }
@@ -224,7 +230,7 @@ body {
 }
 
 .taskOptions .deleteTask, .editTask, .setTaskPriority {
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   color: #ababab;
 }

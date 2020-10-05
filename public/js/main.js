@@ -33,7 +33,7 @@ $(document).ready(function() {
                 // window.location.href = '/tasks'
                 var id = result.data.id
                 var name = result.data.name
-                var newProject = "<div class='project col-4' id='project" + id + "'> <div class='projectHeader'> <div class='projectTitle'> <span> <a data-toggle='modal' data-target='#editDeadLineModal'> <i data-id='" + id + "' class='projectDeadline far fa-calendar-alt fa-2x' data-toggle='tooltip' data-placement='top' title='Set Deadline'></i>   </a> </span> <h5 class='projectName " + id + "'>" + name + "</h5> <div class='projectButtons'> <span data-toggle='tooltip' data-placement='top' title='Edit Project Title'> <a data-toggle='modal' data-target='#editProjectTitleModal'> <i id='editProjectName' class='editProject fas fa-pencil-alt' data-name='" + name + "' data-id='" + id + "'></i> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='top' title='Delete Project'> <a data-toggle='modal' data-target='#deleteProjectModal'> <i id='deleteProject>' class='deleteProject far fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div> </div> <form class='' action='' method=''>  <div class='inputTab'>    <div class='plusButton fas fa-plus'></div>    <input id='inputNewTask" + id + "' data-toggle='tooltip' data-placement='top' title='Please enter 1 to 50 characters' data-description='data-description' class='inputField' minlength='1' maxlength='50' pattern='[A-Za-z].{1-50}'      autocomplete='off' name='taskDescription' value='' type='text' placeholder='  Start typing here to create a task...' required>    <button id='addButton " + id + "' data-id='<%=project.id %>' class='addButton' type='submit' value='Submit'><p>Add task</p></button></div></form><div class='taskList'></div>"
+                var newProject = "<div class='project col-4' id='project" + id + "'> <div class='projectHeader'> <div class='projectTitle'> <span> <a data-toggle='modal' data-target='#editDeadLineModal'> <i data-id='" + id + "' class='projectDeadline far fa-calendar-alt fa-2x' data-toggle='tooltip' data-placement='top' title='Set Deadline'></i>   </a> </span> <h5 class='projectName " + id + "'>" + name + "</h5> <div class='projectButtons'> <span data-toggle='tooltip' data-placement='top' title='Edit Project Title'> <a data-toggle='modal' data-target='#editProjectTitleModal'> <i id='editProjectName' class='editProject fas fa-pencil-alt' data-name='" + name + "' data-id='" + id + "'></i> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='top' title='Delete Project'> <a data-toggle='modal' data-target='#deleteProjectModal'> <i id='deleteProject>' class='deleteProject far fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div> </div> <form class='' action='' method=''>  <div class='inputTab'>    <div class='plusButton fas fa-plus'></div>    <input id='inputNewTask" + id + "' data-toggle='tooltip' data-placement='top' title='Please enter 1 to 50 characters' data-description='data-description' class='inputField' minlength='1' maxlength='50' pattern='[A-Za-z].{1-50}'      autocomplete='off' name='taskDescription' value='' type='text' placeholder='  Start typing here to create a task...' required>    <button id='addButton " + id + "' data-id='" + id + "' class='addButton' type='submit' value='Submit'><p>Add task</p></button></div></form><div class='taskList " + id + "' id='taskList" + id + "'></div>"
                 $('.projects').append(newProject)
                 var projectTitle = document.getElementsByClassName('projectName ' + id)[0]
                 projectTitle.setAttribute("data-toggle", "tooltip", "data", 'top', 'title', 'dawd', 'data-original-title', '')
@@ -165,13 +165,14 @@ $(document).ready(function() {
 
   //Add new task
   $("body").delegate(".addButton", "click", function(event) {
-    // alert('hi')
+    event.preventDefault()
     var thisProjectId = $(this).attr("data-id");
+    // alert(thisProjectId)
     var newTask = $("#inputNewTask" + thisProjectId).val()
     var url = '/submitTask';
-    event.preventDefault()
     // alert(newTask)
     if (newTask !== '' && newTask.length >= 1) {
+
       $.post({
         url: url,
         data: {
@@ -191,8 +192,8 @@ $(document).ready(function() {
           var completed = results.data.completed
           var project_id = results.data.project_id
 
-          var newTask = "<div class='taskRow' id='taskRow" + id + "' data-toggle=' tooltip' data-placement='bottom' title=''>    <div class='doneMark'> <span> <input id='doneMark " + id + "' data-priority='" + priority + "' type='checkbox' data-id='" + id + "' data-completion='" + priority + "' name='doneTaskMark'>      </span> </div>    <div class='separator'></div>    <div class='taskDescription " + id + "' id='taskDescription" + id + "'> <span id='task" + id + "'>" + name + "</span> </div>    <div class='taskOptions'> <span data-toggle='tooltip' data-placement='left' title='Set Priority'> <a class='dropdown' id='dropdownMenuButton' data-id='" + id + "' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> <i class='setTaskPriority fas fa-sort' data-id='" + id + "' data-priority='" + priority + "'></i>  <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'> <a class='dropdown-item priority 4' style='color: red;' data-value='4'>Urgent</a> <a class='dropdown-item priority 3' style='color: orange;' data-value='3'>High</a> <a class='dropdown-item priority 2' style='color: blue;' data-value='2'>Normal</a> <a class='dropdown-item priority 1' style='color: grey;' data-value='1'>Low</a> </div> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Edit task'> <i id='editTask " + id + "' class='editTask fas fa-pencil-alt' data-id='" + id + "' data-description='" + name + "' data-toggle='modal' data-target='#editTaskModal'></i></span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Delete task'> <a data-toggle='modal' data-target='#deleteTaskModal'> <i class='deleteTask fas fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div>"
-          $('.taskList').append(newTask)
+          var newTask = "<div class='taskRow' id='taskRow" + id + "' data-toggle='tooltip' data-placement='bottom' title=''> <div class='doneMark'> <span> <input id='doneMark " + id + "' data-priority='" + priority + "' type='checkbox' data-id='" + id + "' data-completion='" + completed + "' name='doneTaskMark'>      </span> </div>    <div class='separator'></div>    <div class='taskDescription " + id + "' id='taskDescription" + id + "'> <span id='task" + id + "'>" + name + "</span> </div>    <div class='taskOptions'> <span data-toggle='tooltip' data-placement='left' title='Set Priority'> <a class='dropdown' id='dropdownMenuButton" + id + "' data-id='" + id + "' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> <i class='setTaskPriority fas fa-sort' data-id='" + id + "' data-priority='" + priority + "'></i>  <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'> <a class='dropdown-item priority 4' style='color: red;' data-value='4'>Urgent</a> <a class='dropdown-item priority 3' style='color: orange;' data-value='3'>High</a> <a class='dropdown-item priority 2' style='color: blue;' data-value='2'>Normal</a> <a class='dropdown-item priority 1' style='color: grey;' data-value='1'>Low</a> </div> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Edit task'> <i id='editTask " + id + "' class='editTask fas fa-pencil-alt' data-id='" + id + "' data-description='" + name + "' data-toggle='modal' data-target='#editTaskModal'></i></span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Delete task'> <a data-toggle='modal' data-target='#deleteTaskModal'> <i class='deleteTask fas fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div>"
+          $('#taskList' + project_id).prepend(newTask)
 
 
         },
@@ -210,12 +211,10 @@ $(document).ready(function() {
     var markTaskId = $(this).attr("data-id")
     var priority = $(this).attr("data-priority")
     var url = '/markdone/' + markTaskId;
-    if ($(this).prop("checked") == true) {
+    if ($(this).prop("checked") === true) {
       taskCompletion = true
-      $('#taskRow' + markTaskId).tooltip({
-        disabled: true
-      })
-    } else if ($(this).prop("checked") == false) {
+      $('#taskRow' + markTaskId).tooltip('disable')
+    } else if ($(this).prop("checked") === false) {
       taskCompletion = false
       taskStatus = "In progress"
     }
@@ -227,25 +226,26 @@ $(document).ready(function() {
           param2: taskStatus
         },
         success: function(results) {
-          console.log("Marking done/undone");
+          console.log("Marking done/undone task ");
           var imageSpan = document.getElementById('imgSpan' + markTaskId)
           var parent = document.getElementById('taskDescription' + markTaskId)
+          var newImage = '<img id="imgSpan' + markTaskId + '" class="imgSpan" src="images/priority' + priority + '.png" alt="Img">'
+
           if (taskCompletion === true) {
             parent.classList.add('done')
-            if (priority) {
+            $('#dropdownMenuButton' + markTaskId).prop('disabled', true);
+            $('#taskRow' + markTaskId).tooltip('disable')
+            if (imageSpan) {
               imageSpan.style.display = "none";
             }
-          } else {
+          } else if (taskCompletion === false) {
+            parent.classList.remove('done')
+            $('#dropdownMenuButton' + markTaskId).prop('disabled', false);
+            $('#taskRow' + markTaskId).tooltip('enable')
             if (imageSpan) {
-              imageSpan.style.display = "inline-block";
-              parent.classList.remove('done')
+              imageSpan.style.display = 'inline-block';
             } else {
-              if (!priority) {
-                parent.classList.remove('done')
-              } else {
-                parent.classList.remove('done')
-                var newImg = $("<img id='imgSpan" + markTaskId + "' class='imgSpan' src='images/priority" + priority + ".png' alt='Img'>").prependTo(parent);
-              }
+              $('#taskDescription' + markTaskId).prepend(newImage)
             }
           }
         },
@@ -261,12 +261,17 @@ $(document).ready(function() {
   $("body").delegate(".setTaskPriority", "click", function() {
     var priorityTaskId = $(this).attr("data-id");
     var url = '/editPriority'
-    $(this).off();
-    console.log(priorityTaskId);
-    $(".priority").on("click", function() {
-      const newPriority = $(this).attr("data-value");
+    var element = $('#taskDescription' + priorityTaskId)
+    // $(this).off()
+    if (element.hasClass("done")) {
+      $('#dropdownMenuButton' + priorityTaskId).prop('disabled', true);
+      alert("Task is completed")
+    }
+    $(".priority" + priorityTaskId).on("click", function() {
+      var newPriority = $(this).attr("data-value");
       // alert($(this).attr("data-value"))
-      // $(this).off();
+      // $(this).off()
+
       $.post({
         url: url,
         data: {
@@ -274,31 +279,22 @@ $(document).ready(function() {
           id: priorityTaskId
         },
         success: function(result) {
+          // $('.priorty').on();
           $(".setTaskPriority").on()
-          var doneTask = document.getElementsByClassName("taskDescription " + priorityTaskId + " done")
-          var parent = document.getElementsByClassName("taskDescription " + priorityTaskId)
           var oldImg = document.getElementById("imgSpan" + priorityTaskId)
-
-          if (doneTask && oldImg) {
+          if (oldImg) {
             document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
-
-          } else if (doneTask && !oldImg) {
-            var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:none;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>").prependTo(doneTask);
-
-          } else if (!doneTask && !oldImg) {
-            var newImg = $("<img id='imgSpan" + priorityTaskId + "' style='display:inline-block;' class='imgSpan' src='images/priority" + newPriority + ".png' alt='Img'>")
-            parent.prepend(newImg)
-
           } else {
-            document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
+            var newImg = '<img id="imgSpan' + priorityTaskId + '" class="imgSpan" src="images/priority' + newPriority + '.png" alt="Img">'
+            $('#taskDescription' + priorityTaskId).prepend(newImg)
           }
-
         },
         error: function(err) {
           console.log(err);
         }
       })
     })
+
   })
 
   //Edit existing task by ID
@@ -330,11 +326,12 @@ $(document).ready(function() {
               id: editTaskId
             },
             success: function(result) {
+              // $("#editTaskDescription").val('');
               $("#editTaskModal").modal('hide')
               // console.log("editing task");
-              // alert(result.deadline)
-              document.getElementById('task' + editTaskId).innerText = newTask
-              if (result.deadline !== undefined) {
+
+              if (result != undefined) {
+                // $('#taskRow' + editTaskId).attr('data-original-title', "Deadline: " + deadline.toDateString())
                 document.getElementById('taskRow' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
               }
             },
@@ -350,6 +347,7 @@ $(document).ready(function() {
 
   //Delete Task by ID
   $("body").delegate(".deleteTask", "click", function() {
+    $('.deleteTask').off();
     // alert('I am inside')
     var delTaskId = $(this).attr("data-id");
     // alert(delTaskId);

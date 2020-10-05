@@ -46,7 +46,7 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
   const userData = [];
   // Iterate through the projects and query it's tasks
   for (let i = 0; i < userProjects.rows.length; i++) {
-    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =${userProjects.rows[i].id} `);
+    const userTasks = await pool.query(`SELECT * FROM tasks WHERE tasks.project_id =${userProjects.rows[i].id} ORDER BY tasks.completed ASC`);
     const thisProject = {
       id: userProjects.rows[i].id,
       name: userProjects.rows[i].name,
@@ -120,7 +120,7 @@ app.post("/submitTask", async function(req, res) {
     priority: task.rows[0].priority,
     completed: task.rows[0].completed
   }
-  console.log(taskData);
+  // console.log(taskData);
   return res.json({
     data: taskData
   })
@@ -153,7 +153,7 @@ app.post('/edit', function(req, res) {
     pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
   }
   return res.json({
-    result: req.body
+    result: req.body.deadline
   })
 })
 
