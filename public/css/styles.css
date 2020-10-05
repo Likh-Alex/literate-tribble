@@ -189,6 +189,11 @@ body {
   width: 10px;
 }
 
+.hidden {
+  position: absolute;
+  visibility: hidden;
+}
+
 .taskDescription {
   display: table-cell;
   width: auto;
@@ -215,9 +220,8 @@ body {
 
 .dropdown-menu {
   /* font-size: 12px; */
-  min-width: 15px ;
+  min-width: 15px;
 }
-
 
 .taskRow:hover .taskOptions {
   visibility: visible;

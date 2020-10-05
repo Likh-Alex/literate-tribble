@@ -192,7 +192,7 @@ $(document).ready(function() {
           var completed = results.data.completed
           var project_id = results.data.project_id
 
-          var newTask = "<div class='taskRow' id='taskRow" + id + "' data-toggle='tooltip' data-placement='bottom' title=''> <div class='doneMark'> <span> <input id='doneMark " + id + "' data-priority='" + priority + "' type='checkbox' data-id='" + id + "' data-completion='" + completed + "' name='doneTaskMark'>      </span> </div>    <div class='separator'></div>    <div class='taskDescription " + id + "' id='taskDescription" + id + "'> <span id='task" + id + "'>" + name + "</span> </div>    <div class='taskOptions'> <span data-toggle='tooltip' data-placement='left' title='Set Priority'> <a class='dropdown' id='dropdownMenuButton" + id + "' data-id='" + id + "' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> <i class='setTaskPriority fas fa-sort' data-id='" + id + "' data-priority='" + priority + "'></i>  <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'> <a class='dropdown-item priority 4' style='color: red;' data-value='4'>Urgent</a> <a class='dropdown-item priority 3' style='color: orange;' data-value='3'>High</a> <a class='dropdown-item priority 2' style='color: blue;' data-value='2'>Normal</a> <a class='dropdown-item priority 1' style='color: grey;' data-value='1'>Low</a> </div> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Edit task'> <i id='editTask " + id + "' class='editTask fas fa-pencil-alt' data-id='" + id + "' data-description='" + name + "' data-toggle='modal' data-target='#editTaskModal'></i></span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Delete task'> <a data-toggle='modal' data-target='#deleteTaskModal'> <i class='deleteTask fas fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div>"
+          var newTask = "<div class='taskRow' id='taskRow" + id + "' data-toggle='tooltip' data-placement='bottom' title=''> <div class='doneMark'> <span> <input id='doneMark " + id + "' data-priority='" + priority + "' type='checkbox' data-id='" + id + "' data-completion='" + completed + "' name='doneTaskMark'>      </span> </div>    <div class='separator'></div>    <div class='taskDescription " + id + "' id='taskDescription" + id + "'> <span id='task" + id + "'>" + name + "</span> </div>    <div class='taskOptions'> <span data-toggle='tooltip' data-placement='left' title='Set Priority'> <a class='dropdown' id='dropdownMenuButton" + id + "' data-id='" + id + "' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> <i class='setTaskPriority fas fa-sort' data-id='" + id + "' data-priority='" + priority + "'></i>  <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'> <a class='dropdown-item priority" + id + "' style='color: red;' data-value='4'>Urgent</a> <a class='dropdown-item priority" + id + "' style='color: orange;' data-value='3'>High</a> <a class='dropdown-item priority" + id + "' style='color: blue;' data-value='2'>Normal</a> <a class='dropdown-item priority" + id + "' style='color: grey;' data-value='1'>Low</a> </div> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Edit task'> <i id='editTask " + id + "' class='editTask fas fa-pencil-alt' data-id='" + id + "' data-description='" + name + "' data-toggle='modal' data-target='#editTaskModal'></i></span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Delete task'> <a data-toggle='modal' data-target='#deleteTaskModal'> <i class='deleteTask fas fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div>"
           $('#taskList' + project_id).prepend(newTask)
 
 
@@ -210,7 +210,8 @@ $(document).ready(function() {
     var taskStatus = "Completed"
     var markTaskId = $(this).attr("data-id")
     var priority = $(this).attr("data-priority")
-    var url = '/markdone/' + markTaskId;
+    var url = '/markdone';
+
     if ($(this).prop("checked") === true) {
       taskCompletion = true
       $('#taskRow' + markTaskId).tooltip('disable')
@@ -222,30 +223,34 @@ $(document).ready(function() {
       $.post({
         url: url,
         data: {
-          param1: taskCompletion,
-          param2: taskStatus
+          id: markTaskId,
+          priority: priority,
+          completion: taskCompletion,
+          status: taskStatus
         },
         success: function(results) {
-          console.log("Marking done/undone task ");
+          // console.log(typeof results.priority);
+          console.log("Check done/undone");
           var imageSpan = document.getElementById('imgSpan' + markTaskId)
           var parent = document.getElementById('taskDescription' + markTaskId)
-          var newImage = '<img id="imgSpan' + markTaskId + '" class="imgSpan" src="images/priority' + priority + '.png" alt="Img">'
+
 
           if (taskCompletion === true) {
             parent.classList.add('done')
             $('#dropdownMenuButton' + markTaskId).prop('disabled', true);
             $('#taskRow' + markTaskId).tooltip('disable')
+
             if (imageSpan) {
-              imageSpan.style.display = "none";
+              imageSpan.classList.add('hidden')
             }
+
           } else if (taskCompletion === false) {
             parent.classList.remove('done')
             $('#dropdownMenuButton' + markTaskId).prop('disabled', false);
             $('#taskRow' + markTaskId).tooltip('enable')
+
             if (imageSpan) {
-              imageSpan.style.display = 'inline-block';
-            } else {
-              $('#taskDescription' + markTaskId).prepend(newImage)
+              imageSpan.classList.remove('hidden')
             }
           }
         },
@@ -262,15 +267,13 @@ $(document).ready(function() {
     var priorityTaskId = $(this).attr("data-id");
     var url = '/editPriority'
     var element = $('#taskDescription' + priorityTaskId)
-    // $(this).off()
     if (element.hasClass("done")) {
       $('#dropdownMenuButton' + priorityTaskId).prop('disabled', true);
       alert("Task is completed")
     }
     $(".priority" + priorityTaskId).on("click", function() {
       var newPriority = $(this).attr("data-value");
-      // alert($(this).attr("data-value"))
-      // $(this).off()
+      // alert(newPriority)
 
       $.post({
         url: url,
@@ -279,15 +282,16 @@ $(document).ready(function() {
           id: priorityTaskId
         },
         success: function(result) {
-          // $('.priorty').on();
-          $(".setTaskPriority").on()
+
           var oldImg = document.getElementById("imgSpan" + priorityTaskId)
           if (oldImg) {
-            document.getElementById("imgSpan" + priorityTaskId).setAttribute('src', 'images/priority' + newPriority + '.png')
+
+            oldImg.setAttribute('src', 'images/priority' + newPriority + '.png')
           } else {
-            var newImg = '<img id="imgSpan' + priorityTaskId + '" class="imgSpan" src="images/priority' + newPriority + '.png" alt="Img">'
+            newImg = '<img id="imgSpan' + priorityTaskId + '" class="imgSpan" src="images/priority' + newPriority + '.png" alt="Img">'
             $('#taskDescription' + priorityTaskId).prepend(newImg)
           }
+
         },
         error: function(err) {
           console.log(err);
@@ -326,11 +330,9 @@ $(document).ready(function() {
               id: editTaskId
             },
             success: function(result) {
-              // $("#editTaskDescription").val('');
               $("#editTaskModal").modal('hide')
-              // console.log("editing task");
-
-              if (result != undefined) {
+              document.getElementById('task' + editTaskId).innerText = newTask
+              if (result.deadline !== 'Invalid Date') {
                 // $('#taskRow' + editTaskId).attr('data-original-title', "Deadline: " + deadline.toDateString())
                 document.getElementById('taskRow' + editTaskId).attributes[5].value = "Deadline " + deadline.toDateString();
               }

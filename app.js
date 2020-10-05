@@ -127,11 +127,15 @@ app.post("/submitTask", async function(req, res) {
 })
 
 // Mark task DONE/UNDONE
-app.post('/markdone/:id', function(req, res) {
+app.post('/markdone', function(req, res) {
   console.log("Marking done");
-  pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.param1, req.body.param2, req.params.id]);
-  res.sendStatus(200);
+  var priority = req.body.priority
+  pool.query("UPDATE tasks SET completed=$1, status=$2 WHERE id=$3", [req.body.completion, req.body.status, req.body.id]);
+  return res.json({
+    priority: priority
+  })
 })
+
 //Edit priority by Task ID
 app.post('/editPriority', function(req, res) {
   console.log("Editing priority for task ID " + req.body.id + ' with priority ' + req.body.priority);
@@ -143,17 +147,18 @@ app.post('/editPriority', function(req, res) {
 // Edit task by ID
 app.post('/edit', function(req, res) {
   var deadline = req.body.deadline;
-  var isoDeadline = deadline.toISOString;
   console.log("editing task " + req.body.task);
   // console.log(req.body);
   const userId = req.user.id;
   pool.query("UPDATE tasks SET name=$1 WHERE id=$2", [req.body.task, req.body.id]);
-  if (req.body.deadline !== 'Invalid Date') {
+  if (deadline !== 'Invalid Date') {
     var deadline = req.body.deadline;
     pool.query(`UPDATE tasks SET t_deadline= TO_DATE('${req.body.deadline}', 'MM/DD/YYYY') WHERE id = ${req.body.id}`)
+    console.log("setting deadline with " + deadline);
   }
   return res.json({
-    result: req.body.deadline
+    priority: req.body.deadline,
+    deadline: deadline
   })
 })
 
