@@ -178,7 +178,8 @@ app.post("/submitTask", async function(req, res) {
   // Insert new task
   await pool.query("INSERT INTO tasks (name, project_id) VALUES ($1,$2)", [taskName, req.body.id]);
   // Query and save the newTask into taskData
-  var task = await pool.query(`SELECT * FROM tasks WHERE tasks.name=$1`, [taskName])
+  var task = await pool.query(`SELECT * FROM tasks WHERE id =(SELECT max(id) FROM tasks)`)
+  console.log(task.rows);
   var taskData = {
     id: task.rows[0].id,
     name: task.rows[0].name,

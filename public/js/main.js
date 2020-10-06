@@ -181,6 +181,7 @@ $(document).ready(function() {
     var newTask = $("#inputNewTask" + thisProjectId).val()
     var url = '/submitTask';
     // Validate length
+    $(".addButton").off();
     if (newTask.length >= 1 && newTask.length <= 50) {
 
       $.post({
@@ -193,15 +194,6 @@ $(document).ready(function() {
           // On success - Clear new task input Field
           $("#inputNewTask" + thisProjectId).val('')
           // Assign results to new variable
-          // var {
-          //   id,
-          //   name,
-          //   status,
-          //   project_id,
-          //   deadline,
-          //   priority,
-          //   completed
-          // } = results.data
 
           var id = results.data.id
           var name = results.data.name
@@ -213,8 +205,8 @@ $(document).ready(function() {
           // Create element with Task data
           var newTask = "<div class='taskRow' id='taskRow" + id + "' data-toggle='tooltip' data-placement='bottom' title=''> <div class='doneMark'> <span> <input id='doneMark " + id + "' data-priority='" + priority + "' type='checkbox' data-id='" + id + "' data-completion='" + completed + "' name='doneTaskMark'>      </span> </div>    <div class='separator'></div>    <div class='taskDescription " + id + "' id='taskDescription" + id + "'> <span id='task" + id + "'>" + name + "</span> </div>    <div class='taskOptions'> <span data-toggle='tooltip' data-placement='left' title='Set Priority'> <a class='dropdown' id='dropdownMenuButton" + id + "' data-id='" + id + "' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> <i class='setTaskPriority fas fa-sort' data-id='" + id + "' data-priority='" + priority + "'></i>  <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'> <a class='dropdown-item priority" + id + "' style='color: red;' data-value='4'>Urgent</a> <a class='dropdown-item priority" + id + "' style='color: orange;' data-value='3'>High</a> <a class='dropdown-item priority" + id + "' style='color: blue;' data-value='2'>Normal</a> <a class='dropdown-item priority" + id + "' style='color: grey;' data-value='1'>Low</a> </div> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Edit task'> <i id='editTask " + id + "' class='editTask fas fa-pencil-alt' data-id='" + id + "' data-description='" + name + "' data-toggle='modal' data-target='#editTaskModal'></i></span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Delete task'> <a data-toggle='modal' data-target='#deleteTaskModal'> <i class='deleteTask fas fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div>"
           // Prepend element to Task list of it's project
-          $('#taskList' + thisProjectId).prepend(newTask)
-          console.log("Task " + name + " added");
+          $('#taskList' + project_id).prepend(newTask)
+          console.log("Task " + name + " added with ID " + id);
         },
         error: function(err) {
           console.log(err);
@@ -235,7 +227,6 @@ $(document).ready(function() {
     var markTaskId = $(this).attr("data-id")
     var priority = $(this).attr("data-priority")
     var url = '/markdone';
-
     // If checked Done - change taskCompletion value to true
     if ($(this).prop("checked") === true) {
       taskCompletion = true
@@ -244,6 +235,7 @@ $(document).ready(function() {
       taskCompletion = false
       taskStatus = "In progress"
     }
+    $(this).off()
     // Send post request
     $.post({
       url: url,
@@ -254,7 +246,7 @@ $(document).ready(function() {
         status: taskStatus
       },
       success: function(results) {
-        console.log("Check done/undone");
+        console.log("Check done/undone " + markTaskId);
         // Check if task has priority image
         var imageSpan = document.getElementById('imgSpan' + markTaskId)
         // task description field
