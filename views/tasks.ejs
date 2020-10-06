@@ -30,15 +30,17 @@
           <%=project.name%>
         </h5>
         <%}%>
+
+        <!-- Project Buttons -->
       <div class="projectButtons">
+
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal">
-      <i id="editProjectName" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
-        </a>
+            <i id="editProjectName" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
+          </a>
         </span>
 
         <i class="separatorDash fas fa-minus"></i>
-
 
 
         <span data-toggle="tooltip" data-placement="top" title="Delete Project">
