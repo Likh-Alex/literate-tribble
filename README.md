@@ -1,8 +1,6 @@
-Simple To Do list
+# Simple To Do list #
 
-----------
-
-Objective: fulfilling requirements for Ruby Garage test task
+Objective: fulfilling requirements for Ruby Garage test task.
 
 
 
@@ -19,7 +17,7 @@ User has access only to his/her own ToDoLists and Tasks. User entry validation i
 
 SQL task technical requirements implementation:
 -------------------------------
-As with given tables:
+As with given tables
 
 - Tasks (id, name, status, project_id)
 - Projects (id, name)
