@@ -5,6 +5,8 @@ $(document).ready(function() {
     selector: '[data-toggle="tooltip"]'
   });
 
+
+
   // Add new TODO list
   $("body").delegate("#addNewProjectBtn", "click", function() {
     // $("#addNewProjectBtn").off();

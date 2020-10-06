@@ -3,9 +3,11 @@
 
 <!-- Current projects tab -->
 
-<div class="logoutButton">
+<nav class="navbar sticky-top navbar-light ">
+  <a class="navbar-brand" href="https://github.com/Likh-Alex/literate-tribble"><i class="fab fa-github "></i></a>
   <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
-</div>
+</nav>
+
 
 <div class="projects">
 
@@ -35,7 +37,10 @@
         </a>
         </span>
 
-<i class="dropdown-toggle-split"></i>
+        <i class="separatorDash fas fa-minus"></i>
+
+
+
         <span data-toggle="tooltip" data-placement="top" title="Delete Project">
           <a data-toggle="modal" data-target="#deleteProjectModal">
             <i id="deleteProject>" class="deleteProject far fa-trash-alt" data-id="<%=project.id%>"></i>
@@ -124,13 +129,13 @@
         </a>
 
 
-        <i class="dropdown-toggle-split"></i>
+        <i class="separatorDash fas fa-minus"></i>
 
         <span data-toggle="tooltip" data-placement="left" title="Edit task">
           <i id="editTask <%= task.id%>" class="editTask fas fa-pencil-alt" data-id="<%= task.id%>" data-description="<%= task.name%>" data-toggle="modal" data-target="#editTaskModal"></i>
         </span>
 
-        <i class="dropdown-toggle-split"></i>
+        <i class="separatorDash fas fa-minus"></i>
 
         <a data-toggle="modal" data-target="#deleteTaskModal">
           <i data-toggle="tooltip" data-placement="left" title="Delete task" class="deleteTask fas fa-trash-alt" data-id="<%= task.id%>"></i>
