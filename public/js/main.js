@@ -56,7 +56,7 @@ $(document).ready(function() {
     var today = new Date()
     url = '/setProjectDeadline'
     var projectId = $(this).attr('data-id')
-    var projectName =$(this).attr('data-name')
+    var projectName = $(this).attr('data-name')
     $("#confirmEditDeadline").on("click", function(event) {
       $(this).off();
       event.preventDefault();
@@ -193,19 +193,27 @@ $(document).ready(function() {
           // On success - Clear new task input Field
           $("#inputNewTask" + thisProjectId).val('')
           // Assign results to new variable
-          var {
-            id,
-            name,
-            status,
-            project_id,
-            deadline,
-            priority,
-            completed
-          } = results.data
+          // var {
+          //   id,
+          //   name,
+          //   status,
+          //   project_id,
+          //   deadline,
+          //   priority,
+          //   completed
+          // } = results.data
+
+          var id = results.data.id
+          var name = results.data.name
+          var status = results.data.status
+          var project_id = results.data.project_id
+          var deadline = results.data.deadline
+          var priority = results.data.priority
+          var completed = results.data.completed
           // Create element with Task data
           var newTask = "<div class='taskRow' id='taskRow" + id + "' data-toggle='tooltip' data-placement='bottom' title=''> <div class='doneMark'> <span> <input id='doneMark " + id + "' data-priority='" + priority + "' type='checkbox' data-id='" + id + "' data-completion='" + completed + "' name='doneTaskMark'>      </span> </div>    <div class='separator'></div>    <div class='taskDescription " + id + "' id='taskDescription" + id + "'> <span id='task" + id + "'>" + name + "</span> </div>    <div class='taskOptions'> <span data-toggle='tooltip' data-placement='left' title='Set Priority'> <a class='dropdown' id='dropdownMenuButton" + id + "' data-id='" + id + "' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> <i class='setTaskPriority fas fa-sort' data-id='" + id + "' data-priority='" + priority + "'></i>  <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'> <a class='dropdown-item priority" + id + "' style='color: red;' data-value='4'>Urgent</a> <a class='dropdown-item priority" + id + "' style='color: orange;' data-value='3'>High</a> <a class='dropdown-item priority" + id + "' style='color: blue;' data-value='2'>Normal</a> <a class='dropdown-item priority" + id + "' style='color: grey;' data-value='1'>Low</a> </div> </a> </span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Edit task'> <i id='editTask " + id + "' class='editTask fas fa-pencil-alt' data-id='" + id + "' data-description='" + name + "' data-toggle='modal' data-target='#editTaskModal'></i></span> <i class='separatorDash fas fa-minus'></i> <span data-toggle='tooltip' data-placement='left' title='Delete task'> <a data-toggle='modal' data-target='#deleteTaskModal'> <i class='deleteTask fas fa-trash-alt' data-id='" + id + "'></i> </a> </span> </div> </div>"
           // Prepend element to Task list of it's project
-          $('#taskList' + project_id).prepend(newTask)
+          $('#taskList' + thisProjectId).prepend(newTask)
           console.log("Task " + name + " added");
         },
         error: function(err) {
@@ -214,7 +222,7 @@ $(document).ready(function() {
       })
       // If length not validated give alert
     } else {
-      alert("Pleas match requested format")
+      alert("Please match requested format")
     }
   })
 
@@ -288,9 +296,11 @@ $(document).ready(function() {
   // Set priority for Task
   $("body").delegate(".setTaskPriority", "click", function() {
     var priorityTaskId = $(this).attr("data-id");
+    console.log(priorityTaskId);
     var url = '/editPriority'
     // check if element has class "done"
     var element = $('#taskDescription' + priorityTaskId)
+    $(this).off();
     // If has - disable button and alert
     if (element.hasClass("done")) {
       $('#dropdownMenuButton' + priorityTaskId).prop('disabled', true);

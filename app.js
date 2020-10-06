@@ -189,7 +189,7 @@ app.post("/submitTask", async function(req, res) {
     completed: task.rows[0].completed
   }
 
-  console.log("adding new task " + taskName);
+  console.log("adding new task " + taskName + " for project " + req.body.id);
   // Return taskData to addTask event
   return res.json({
     data: taskData
