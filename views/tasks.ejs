@@ -5,14 +5,14 @@
 
 <nav class="navbar navbar-light ">
   <a class="navbar-brand" href="https://github.com/Likh-Alex/literate-tribble"><i class="fab fa-github "></i></a>
-  <button type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
+  <button id="logoutUser" type="button" class="btn btn-light"><a href="/logout">Logout</a></button>
 </nav>
 
 
 <div class="projects">
 
   <%userData.forEach(function(project, i){%>
-  <div class="project col-4" id='project<%=project.id%>'>
+  <div class="project col-4" ng-repeat="project" id='project<%=project.id%>'>
     <div class="projectHeader">
       <div class="projectTitle">
         <span>
@@ -73,7 +73,7 @@
   <div class="taskList" id="taskList<%=project.id%>">
     <% userData[i].tasks.forEach(function(task){%>
     <%if(task.t_deadline === null || task.completed === true ){%>
-    <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="">
+    <div class="taskRow" ng-repeat="task" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="">
       <%}else{%>
       <% var taskDeadline = task.t_deadline.toDateString();%>
       <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">

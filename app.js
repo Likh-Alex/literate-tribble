@@ -14,7 +14,6 @@ const initializePassport = require('./passportConfig.js');
 initializePassport(passport);
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const fs = require('fs-extra')
 const app = express();
 
 app.use(express.static("public"))
@@ -33,16 +32,27 @@ app.use(passport.session());
 
 
 
+const homePage = "ToDoList"
+const registerPage = 'Register an account'
+const loginPage = "Login with account"
+const tasksPage = "Task Lists"
+
 
 //Render Home page
-app.get("/", checkAuthenticated, function(req, res) {
-  res.render("home")
+app.get("/home", checkAuthenticated, function(req, res) {
+  var title = "ToDoList"
+  res.render("home", {
+    title: homePage
+  })
 })
 
 
 // Login page
 app.get("/login", checkAuthenticated, function(req, res) {
-  res.render('login')
+  var title = 'Login with account'
+  res.render('login', {
+    title: loginPage
+  })
 })
 //Check if user exists and login as well compare password entered and saved in DB
 app.post('/login', passport.authenticate('local', {
@@ -53,7 +63,10 @@ app.post('/login', passport.authenticate('local', {
 
 // Get to register Page
 app.get("/register", checkAuthenticated, function(req, res) {
-  res.render('register')
+  var title = 'Register an account'
+  res.render('register', {
+    title: registerPage
+  })
 })
 
 // Register page save password in hash
@@ -72,6 +85,7 @@ app.post("/register", async function(req, res) {
       message: "Passwords in first and second field must match"
     })
     res.render('register', {
+      title: registerPage,
       errors
     })
   }
@@ -87,6 +101,7 @@ app.post("/register", async function(req, res) {
       message: "Now you can login using your credentials"
     })
     res.render('login', {
+      title: loginPage,
       errors
     })
     // If user exists show message
@@ -95,6 +110,7 @@ app.post("/register", async function(req, res) {
       message: "This email is already registered"
     })
     res.render('register', {
+      title: registerPage,
       errors
     });
   }
@@ -121,6 +137,7 @@ app.get("/tasks", checkNotAuthenticated, async (req, res) => {
   };
   // Render task pass userData array
   res.render("tasks", {
+    title: tasksPage,
     userData: userData
   })
 })
@@ -248,7 +265,7 @@ app.post('/deletetask', function(req, res) {
 // Logout and END Session
 app.get('/logout', (req, res) => {
   req.logOut();
-  res.redirect('/')
+  res.redirect('/home')
 })
 
 

@@ -5,7 +5,7 @@
   <ul>
     <% if(typeof errors != 'undefined'){%>
     <% errors.forEach(error=>{%>
-    <li><%= error.message %></li>
+    <li id="errMsg"><%= error.message %></li>
     <%})%>
     <%}%>
   </ul>
@@ -15,7 +15,7 @@
       <div class="card">
         <div class="card-body">
           <!-- Makes POST request to /register route -->
-          <form action="/register" method="POST">
+          <form id="register" action="/register" method="POST">
             <div class="form-group">
               <label for="email">Email</label>
               <input id="username" type="email" class="form-control" placeholder="MyEmail@mail.com" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
@@ -41,7 +41,7 @@
             <i class="fab fa-google"></i>
             Sign Up with Google
           </a> -->
-          <a href='/login' class="btn btn-block btn-social btn-info" role="button">
+          <a href='/login' class="btn btn-block btn-social btn-info" name="changeToLogin" role="button">
             <i class="fas fa-check-double"></i>
             Login with ToDoList account
           </a>
