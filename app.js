@@ -39,10 +39,10 @@ const tasksPage = "Task Lists"
 
 
 //Render Home page
-app.get("/home", checkAuthenticated, function(req, res) {
+app.get("/", checkAuthenticated, function(req, res) {
   var title = "ToDoList"
   res.render("home", {
-    title: homePage
+    title: title
   })
 })
 
@@ -265,7 +265,7 @@ app.post('/deletetask', function(req, res) {
 // Logout and END Session
 app.get('/logout', (req, res) => {
   req.logOut();
-  res.redirect('/home')
+  res.redirect('/')
 })
 
 

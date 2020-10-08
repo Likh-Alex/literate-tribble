@@ -2,7 +2,6 @@ const {
   pool
 } = require("../dbConfig");
 browser.waitForAngularEnabled(false);
-browser.get("http://localhost:3000/home")
 
 // Clear database before Tests
 pool.query("DELETE FROM tasks")
@@ -15,7 +14,7 @@ describe('Home-Login-Register', function() {
   var loginPage = element(by.name("login"));
 
   beforeEach(function() {
-    browser.get('http://localhost:3000/home');
+    browser.get('http://localhost:3000/');
   });
 
 
@@ -24,7 +23,7 @@ describe('Home-Login-Register', function() {
   })
 
   it('Should hade URL = /home', function() {
-    expect(browser.getCurrentUrl()).toBe('http://localhost:3000/home')
+    expect(browser.getCurrentUrl()).toBe('http://localhost:3000/')
   })
 
   it('Should go to REGISTER page', function() {
@@ -141,7 +140,7 @@ describe("ToDoLists Login/Logout", function() {
   var loginPage = element(by.name("login"));
 
   beforeEach(function() {
-    browser.get('http://localhost:3000/home');
+    browser.get('http://localhost:3000/');
   });
 
   it("Should login and logout user", function() {
@@ -158,7 +157,7 @@ describe("ToDoLists Login/Logout", function() {
     expect(browser.getTitle()).toEqual('Task Lists')
     var logout = element(by.id("logoutUser"))
     logout.click();
-    expect(browser.getCurrentUrl()).toBe("http://localhost:3000/home")
+    expect(browser.getCurrentUrl()).toBe("http://localhost:3000/")
     expect(browser.getTitle()).toEqual('ToDoList')
   })
 
@@ -168,7 +167,7 @@ describe("ToDoList Functionality", function() {
   var loginPage = element(by.name("login"));
 
   beforeEach(function() {
-    browser.get('http://localhost:3000/home');
+    browser.get('http://localhost:3000/');
   });
 
   it("Login into ToDoList", function() {
@@ -266,7 +265,7 @@ describe("ToDoList Functionality", function() {
 
     browser.sleep(1000)
 
-    expect(element.all(by.css('[data-original-title="Deadline Wed Nov 11 2021"]')).count()).toEqual(1)
+    expect(element.all(by.css('[data-original-title="Deadline Thu Nov 11 2021"]')).count()).toEqual(1)
   })
 
   it("Should delete first task", function() {
