@@ -18,6 +18,25 @@ Functional tests implemented using Jasmine and Protractor
 
 To run tests: `npm test`
 
+To start app : `npm start`
+
+Frameworks, Libraries used:
+
+Backend : 
+
+- Node.js
+- Express.js
+
+Front End:
+
+Frontend:
+
+- EJS
+
+SQL solution:
+
+- PostgreSQL
+
 SQL task technical requirements implementation:
 -------------------------------
 As with given tables
