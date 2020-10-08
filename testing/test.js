@@ -260,13 +260,13 @@ describe("ToDoList Functionality", function() {
     browser.sleep(500)
 
     browser.actions().
-    mouseMove(element(by.id("deadLineEntry")).sendKeys("11/11/2020")).
+    mouseMove(element(by.id("deadLineEntry")).sendKeys("11/11/2021")).
     mouseMove(element(by.id("confirmEditTask")).click()).
     perform();
 
     browser.sleep(1000)
 
-    expect(element.all(by.css('[data-original-title="Deadline Wed Nov 11 2020"]')).count()).toEqual(1)
+    expect(element.all(by.css('[data-original-title="Deadline Wed Nov 11 2021"]')).count()).toEqual(1)
   })
 
   it("Should delete first task", function() {

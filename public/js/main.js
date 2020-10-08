@@ -10,16 +10,18 @@ $(document).ready(function() {
 
   // Add new TODO list
   $("body").delegate("#addNewProjectBtn", "click", function() {
+    $(this).off()
     $("#newProjectModal").on('show.bs.modal', function() {
-      $(this).off();
+      $(this).off()
       var url = '/addNewList';
+
       $(".confirmNewList").on("click", function(event) {
+        $(".confirmNewList").off();
         var newListTitle = $("#newListNameInput").val()
         if (newListTitle.length < 1) {
           alert("Please enter the list name")
         } else {
           if (newListTitle.length >= 1 && newListTitle.length <= 25) {
-            $(".confirmNewList").off();
             event.preventDefault();
             // Send ajax to server
             $.post({
@@ -30,6 +32,7 @@ $(document).ready(function() {
               success: function(result) {
                 $("#newProjectModal").modal('hide')
                 $("#newListNameInput").val('');
+
                 // If Success - append new List into DOM
                 var id = result.data.id
                 var name = result.data.name
