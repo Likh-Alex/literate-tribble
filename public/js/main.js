@@ -18,7 +18,7 @@ $(document).ready(function() {
         if (newListTitle.length < 1) {
           alert("Please enter the list name")
         } else {
-          if (newListTitle.length >= 1 && newListTitle.length <= 15) {
+          if (newListTitle.length >= 1 && newListTitle.length <= 25) {
             $(".confirmNewList").off();
             event.preventDefault();
             // Send ajax to server
@@ -111,7 +111,7 @@ $(document).ready(function() {
         alert("New Title should be different")
       }
       // If length requirement is satisfied - send post request
-      if (newTitle.length > 1 && newTitle.length <= 15) {
+      if (newTitle.length > 1 && newTitle.length <= 25) {
         event.preventDefault();
         $.post({
           url: url,
@@ -130,7 +130,7 @@ $(document).ready(function() {
         })
       } else {
         // If length requirement is not satisfied - give alert
-        alert("List name must be 1-15 characters")
+        alert("List name must be 1-25 characters")
       }
     })
   })

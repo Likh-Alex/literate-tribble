@@ -37,7 +37,7 @@
         <span data-toggle="tooltip" data-placement="top" title="Edit Project Title">
           <a data-toggle="modal" data-target="#editProjectTitleModal">
             <i id="editProjectName" class="editProject fas fa-pencil-alt" data-name="<%=project.name%>" data-id="<%=project.id%>"></i>
-          </a>
+        </a>
         </span>
 
         <i class="separatorDash fas fa-minus"></i>
@@ -73,7 +73,7 @@
   <div class="taskList" id="taskList<%=project.id%>">
     <% userData[i].tasks.forEach(function(task){%>
     <%if(task.t_deadline === null || task.completed === true ){%>
-    <div class="taskRow" ng-repeat="task" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="">
+    <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="">
       <%}else{%>
       <% var taskDeadline = task.t_deadline.toDateString();%>
       <div class="taskRow" id="taskRow<%=task.id%>" data-toggle="tooltip" data-placement="bottom" title="DeadLine <%= taskDeadline %>">
@@ -123,10 +123,10 @@
         <i data-toggle="tooltip" data-placement="left" title="Set Priority" class="setTaskPriority fas fa-sort" data-id="<%= task.id%>" data-priority="<%= task.priority%>"></i>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item priority<%= task.id%>" style="color: red;" data-value="4">Urgent</a>
-          <a class="dropdown-item priority<%= task.id%>" style="color: orange;" data-value='3'>High</a>
-          <a class="dropdown-item priority<%= task.id%>" style="color: blue;" data-value='2'>Normal</a>
-          <a class="dropdown-item priority<%= task.id%>" style=" color: grey;" data-value='1'>Low</a>
+          <a class="dropdown-item 4 priority<%= task.id%>" style="color: red;" data-value="4">Urgent</a>
+          <a class="dropdown-item 3 priority<%= task.id%>" style="color: orange;" data-value='3'>High</a>
+          <a class="dropdown-item 2 priority<%= task.id%>" style="color: blue;" data-value='2'>Normal</a>
+          <a class="dropdown-item 1 priority<%= task.id%>" style=" color: grey;" data-value='1'>Low</a>
         </div>
         </a>
 
