@@ -4,6 +4,7 @@
   "description": "A to do list",
   "main": "app.js",
   "scripts": {
+    "start":"node app.js",
     "test": "protractor testing/conf.js"
   },
   "repository": {
