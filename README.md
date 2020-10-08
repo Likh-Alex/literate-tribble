@@ -16,7 +16,7 @@ User has access only to own ToDoLists and Tasks. User entry validation is implem
 
 Functional tests implemented using Jasmine and Protractor
 
-To run tests: `npm test`
+To run tests : `npm test`
 
 To start app : `npm start`
 
@@ -26,8 +26,6 @@ Backend :
 
 - Node.js
 - Express.js
-
-Front End:
 
 Frontend:
 
