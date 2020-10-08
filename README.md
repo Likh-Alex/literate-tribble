@@ -14,12 +14,6 @@ User is able to perform all CRUD operations with ToDoLists and It's tasks (Creat
 
 User has access only to own ToDoLists and Tasks. User entry validation is implemented on both client and server side.
 
-Functional tests implemented using Jasmine and Protractor
-
-To run tests : `npm test`
-
-To start app : `npm start`
-
 Frameworks, Libraries used:
 
 Backend : 
@@ -34,6 +28,14 @@ Frontend:
 SQL solution:
 
 - PostgreSQL
+
+Functional tests implemented using Jasmine and Protractor
+
+To run tests : `npm test`
+
+To start app : `npm start`
+
+
 
 SQL task technical requirements implementation:
 -------------------------------
