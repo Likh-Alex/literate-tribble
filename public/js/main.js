@@ -9,20 +9,20 @@ $(document).ready(function() {
 
 
   // Add new TODO list
-  $("body").delegate("#addNewProjectBtn", "click", function() {
+  $("body").on("click", "#addNewProjectBtn", function() {
     $(this).off()
     $("#newProjectModal").on('show.bs.modal', function() {
-      $(this).off()
       var url = '/addNewList';
-
+      $(this).off()
       $(".confirmNewList").on("click", function(event) {
-        $(".confirmNewList").off();
+        $(this).off()
         var newListTitle = $("#newListNameInput").val()
         if (newListTitle.length < 1) {
           alert("Please enter the list name")
         } else {
           if (newListTitle.length >= 1 && newListTitle.length <= 25) {
             event.preventDefault();
+
             // Send ajax to server
             $.post({
               url: url,
@@ -32,7 +32,6 @@ $(document).ready(function() {
               success: function(result) {
                 $("#newProjectModal").modal('hide')
                 $("#newListNameInput").val('');
-
                 // If Success - append new List into DOM
                 var id = result.data.id
                 var name = result.data.name
@@ -52,6 +51,7 @@ $(document).ready(function() {
       })
     })
   })
+
 
 
   // Set Deadline for Project
@@ -143,7 +143,7 @@ $(document).ready(function() {
 
   // Delete Project by ID
   $("body").delegate(".deleteProject", "click", function() {
-    $(this).off();
+    $(".deleteProject").off();
     // Grab ID
     var deleteProjectId = $(this).attr('data-id');
     var url = '/deleteProject';
