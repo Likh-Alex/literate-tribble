@@ -12,8 +12,10 @@ The application is deployed on Heroku, right [here](https://todolist-for-ruby-ga
 
 User is able to perform all CRUD operations with ToDoLists and It's tasks (Create, Read, Update, Delete).
 
-User has access only to his/her own ToDoLists and Tasks. User entry validation is implemented on both client and server side.
+User has access only to own ToDoLists and Tasks. User entry validation is implemented on both client and server side.
 
+Functional tests implemented using Jasmine and Protractor
+To run tests: `npm test`
 
 SQL task technical requirements implementation:
 -------------------------------
